@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -16,8 +16,14 @@ import couple7 from "@/assets/couple-7.jpg";
 import couple8 from "@/assets/couple-8.jpg";
 import couple9 from "@/assets/couple-9.jpg";
 import couple10 from "@/assets/couple-10.jpg";
+import BackgroundPattern from "@/components/ui/BackgroundPattern";
+import { AnimatedSectionHeader } from "@/components/ui/SectionHeader";
+import { SECTION_TITLES } from "@/constants";
+import type { GalleryImage } from "@/types";
 
-const images = [
+const AUTO_SCROLL_INTERVAL = 4000;
+
+const images: GalleryImage[] = [
   { src: couple1, alt: "Eduardo e Nicole na praia" },
   { src: couple2, alt: "Eduardo e Nicole juntos" },
   { src: couple3, alt: "Eduardo e Nicole sorrindo" },
@@ -29,38 +35,36 @@ const images = [
   { src: couple10, alt: "Eduardo e Nicole apaixonados" },
 ];
 
+/**
+ * Gallery Section Component
+ * Displays a carousel of couple photos with auto-scroll
+ */
 const GallerySection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [api, setApi] = useState<CarouselApi>();
 
+  const scrollToNext = useCallback(() => {
+    api?.scrollNext();
+  }, [api]);
+
   useEffect(() => {
     if (!api) return;
 
-    const interval = setInterval(() => {
-      api.scrollNext();
-    }, 4000);
-
+    const interval = setInterval(scrollToNext, AUTO_SCROLL_INTERVAL);
     return () => clearInterval(interval);
-  }, [api]);
+  }, [api, scrollToNext]);
 
   return (
-    <section className="py-20 md:py-32 bg-foreground/5 overflow-hidden" ref={ref}>
+    <section className="py-20 md:py-32 bg-[#fdfcf9] overflow-hidden relative" ref={ref}>
+      <BackgroundPattern opacity={100} />
+
       <div className="max-w-7xl mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <p className="font-heading text-accent uppercase tracking-[0.3em] text-xs mb-4">
-            Momentos Especiais
-          </p>
-          <h2 className="font-script text-4xl md:text-6xl text-primary">
-            Nossa Galeria
-          </h2>
-          <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent mx-auto mt-6" />
-        </motion.div>
+        <AnimatedSectionHeader
+          isInView={isInView}
+          subtitle={SECTION_TITLES.gallery.subtitle}
+          title={SECTION_TITLES.gallery.title}
+        />
 
         <motion.div
           initial={{ opacity: 0 }}
@@ -77,7 +81,10 @@ const GallerySection = () => {
           >
             <CarouselContent className="-ml-2 md:-ml-4">
               {images.map((image, index) => (
-                <CarouselItem key={index} className="pl-2 md:pl-4 basis-[85%] md:basis-1/2 lg:basis-1/3">
+                <CarouselItem
+                  key={`gallery-image-${index}`}
+                  className="pl-2 md:pl-4 basis-[85%] md:basis-1/2 lg:basis-1/3"
+                >
                   <div className="relative group overflow-hidden rounded-2xl shadow-xl">
                     <div className="aspect-[3/4]">
                       <img
@@ -97,9 +104,10 @@ const GallerySection = () => {
           <div className="flex justify-center gap-2 mt-8">
             {images.map((_, index) => (
               <button
-                key={index}
+                key={`dot-${index}`}
                 onClick={() => api?.scrollTo(index)}
                 className="w-2 h-2 rounded-full bg-primary/30 hover:bg-primary/60 transition-colors duration-300"
+                aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>

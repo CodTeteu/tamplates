@@ -1,40 +1,26 @@
 import { motion } from "framer-motion";
 import { Calendar, MapPin, ChevronDown } from "lucide-react";
-import { useEffect, useState } from "react";
-import coupleImage from "@/assets/couple-6.jpg";
+import coupleImage from "@/assets/couple-7.jpg";
+import useCountdown from "@/hooks/useCountdown";
+import { WEDDING, VENUE, COUPLE } from "@/constants";
 
+/**
+ * Hero Section Component
+ * Displays the main hero banner with couple image, names, countdown, and CTA
+ */
 const HeroSection = () => {
-  const weddingDate = new Date("2026-02-28T18:00:00");
-  
-  const calculateTimeLeft = () => {
-    const difference = +weddingDate - +new Date();
-    let timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
-
-    if (difference > 0) {
-      timeLeft = {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-      };
-    }
-
-    return timeLeft;
-  };
-
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
+  const timeLeft = useCountdown(WEDDING.date);
 
   const scrollToConfirmation = () => {
     document.getElementById("confirmacao")?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const countdownItems = [
+    { value: timeLeft.days, label: "Dias" },
+    { value: timeLeft.hours, label: "Horas" },
+    { value: timeLeft.minutes, label: "Min" },
+    { value: timeLeft.seconds, label: "Seg" },
+  ];
 
   return (
     <section id="inicio" className="relative min-h-screen flex flex-col overflow-hidden">
@@ -42,8 +28,8 @@ const HeroSection = () => {
       <div className="absolute inset-0 z-0">
         <img
           src={coupleImage}
-          alt="Eduardo e Nicole"
-          className="w-full h-full object-cover object-top"
+          alt={COUPLE.displayName}
+          className="w-full h-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/80" />
       </div>
@@ -66,7 +52,7 @@ const HeroSection = () => {
           className="font-script text-5xl md:text-7xl lg:text-8xl text-[#fffaef] drop-shadow-2xl"
           style={{ textShadow: "0 4px 30px rgba(0,0,0,0.5)" }}
         >
-          Eduardo & Nicole
+          {COUPLE.displayName}
         </motion.h1>
 
         <motion.div
@@ -78,20 +64,24 @@ const HeroSection = () => {
       </div>
 
       {/* Bottom Content - Countdown and Button */}
-      <div className="relative z-10 pb-8 md:pb-12 px-4">
+      <div className="relative z-10 pb-4 md:pb-6 px-4">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-8 text-[#fffaef]/90 mb-8"
+          className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-8 text-[#fffaef]/90 mb-4"
         >
           <div className="flex items-center gap-2 backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full">
             <Calendar className="w-4 h-4" />
-            <span className="font-heading text-sm md:text-base tracking-wide">28 de Fevereiro de 2026</span>
+            <span className="font-heading text-sm md:text-base tracking-wide">
+              {WEDDING.dateFormatted}
+            </span>
           </div>
           <div className="flex items-center gap-2 backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full">
             <MapPin className="w-4 h-4" />
-            <span className="font-heading text-sm md:text-base tracking-wide">Galeto Mamma Mia</span>
+            <span className="font-heading text-sm md:text-base tracking-wide">
+              {VENUE.name}
+            </span>
           </div>
         </motion.div>
 
@@ -100,16 +90,11 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7 }}
-          className="grid grid-cols-4 gap-2 md:gap-4 max-w-md mx-auto mb-8"
+          className="grid grid-cols-4 gap-2 md:gap-4 max-w-md mx-auto mb-4"
         >
-          {[
-            { value: timeLeft.days, label: "Dias" },
-            { value: timeLeft.hours, label: "Horas" },
-            { value: timeLeft.minutes, label: "Min" },
-            { value: timeLeft.seconds, label: "Seg" },
-          ].map((item, index) => (
+          {countdownItems.map((item) => (
             <div
-              key={index}
+              key={item.label}
               className="bg-black/40 backdrop-blur-md border border-[#fffaef]/20 rounded-xl py-3 md:py-4 px-2"
             >
               <span className="block font-heading text-2xl md:text-3xl font-light text-[#fffaef] tracking-wide">
@@ -137,7 +122,7 @@ const HeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 1.2 }}
-          className="mt-6"
+          className="mt-2"
         >
           <ChevronDown className="w-6 h-6 text-[#fffaef]/50 animate-bounce mx-auto" />
         </motion.div>

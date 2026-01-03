@@ -4,41 +4,41 @@ import { useRef, useState } from "react";
 import { Gift, Copy, Check, Smartphone, Building2 } from "lucide-react";
 import giftsImage from "@/assets/gifts.jpg";
 import { toast } from "@/hooks/use-toast";
+import BackgroundPattern from "@/components/ui/BackgroundPattern";
+import { AnimatedSectionHeader } from "@/components/ui/SectionHeader";
+import { SECTION_TITLES, PIX } from "@/constants";
 
+const COPY_TIMEOUT = 3000;
+
+/**
+ * Gifts Section Component
+ * Displays gift registry information with PIX payment details
+ */
 const GiftsSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [copied, setCopied] = useState(false);
 
-  const pixKey = "51985363626";
-
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(pixKey);
+    navigator.clipboard.writeText(PIX.key);
     setCopied(true);
     toast({
       title: "Chave Pix copiada!",
       description: "A chave foi copiada para sua área de transferência.",
     });
-    setTimeout(() => setCopied(false), 3000);
+    setTimeout(() => setCopied(false), COPY_TIMEOUT);
   };
 
   return (
-    <section id="presentes" className="py-20 md:py-32 bg-foreground/5" ref={ref}>
-      <div className="max-w-7xl mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <p className="font-heading text-accent uppercase tracking-[0.3em] text-xs mb-4">
-            Com Carinho
-          </p>
-          <h2 className="font-script text-4xl md:text-6xl text-primary">
-            Lista de Presentes
-          </h2>
-          <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent mx-auto mt-6" />
-        </motion.div>
+    <section id="presentes" className="py-20 md:py-32 bg-background relative" ref={ref}>
+      <BackgroundPattern opacity={30} />
+
+      <div className="max-w-7xl mx-auto px-4 relative z-10">
+        <AnimatedSectionHeader
+          isInView={isInView}
+          subtitle={SECTION_TITLES.gifts.subtitle}
+          title={SECTION_TITLES.gifts.title}
+        />
 
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center max-w-6xl mx-auto">
           {/* Content */}
@@ -51,7 +51,7 @@ const GiftsSection = () => {
             <p className="font-body text-muted-foreground leading-relaxed mb-6 text-lg">
               Nossa maior alegria é ter você conosco. Para quem desejar nos presentear, esta lista foi preparada com carinho para nos acompanhar no início dessa nova etapa.
             </p>
-            
+
             <p className="font-heading text-primary text-xl mb-10 italic">
               "O que realmente importa é a sua presença."
             </p>
@@ -62,33 +62,37 @@ const GiftsSection = () => {
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
                   <Gift className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-heading text-xl text-foreground tracking-wide">Presentear com Pix</h3>
+                <h3 className="font-heading text-xl text-foreground tracking-wide">
+                  Presentear com Pix
+                </h3>
               </div>
 
               <div className="space-y-4 mb-6">
                 <div className="flex items-center gap-3 text-muted-foreground p-3 bg-foreground/5 rounded-xl">
                   <Smartphone className="w-5 h-5 text-primary/70" />
                   <div>
-                    <span className="font-body text-sm text-muted-foreground">Chave (Celular)</span>
-                    <p className="font-heading text-foreground">{pixKey}</p>
+                    <span className="font-body text-sm text-muted-foreground">
+                      Chave ({PIX.keyType})
+                    </span>
+                    <p className="font-heading text-foreground">{PIX.key}</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-3 text-muted-foreground p-3 bg-foreground/5 rounded-xl">
                   <div className="w-5 h-5 flex items-center justify-center">
                     <span className="text-primary/70 font-bold text-sm">N</span>
                   </div>
                   <div>
                     <span className="font-body text-sm text-muted-foreground">Nome</span>
-                    <p className="font-heading text-foreground">Eduardo Piccini Martins</p>
+                    <p className="font-heading text-foreground">{PIX.recipientName}</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-3 text-muted-foreground p-3 bg-foreground/5 rounded-xl">
                   <Building2 className="w-5 h-5 text-primary/70" />
                   <div>
                     <span className="font-body text-sm text-muted-foreground">Banco</span>
-                    <p className="font-heading text-foreground">Mercado Pago</p>
+                    <p className="font-heading text-foreground">{PIX.bank}</p>
                   </div>
                 </div>
               </div>

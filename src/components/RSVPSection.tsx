@@ -1,41 +1,75 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import { Send, User, Phone, Users, Music, MessageCircle, Heart } from "lucide-react";
+import { Send, User, Phone, Users, MessageCircle, Heart } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import BackgroundPattern from "@/components/ui/BackgroundPattern";
+import { AnimatedSectionHeader } from "@/components/ui/SectionHeader";
+import { SECTION_TITLES, WEDDING, COUPLE, CONTACT } from "@/constants";
+import type { RSVPFormData } from "@/types";
 
+const INITIAL_FORM_DATA: RSVPFormData = {
+  name: "",
+  phone: "",
+  attending: "yes",
+  guests: "1",
+  message: "",
+};
+
+const GUEST_OPTIONS = [
+  { value: "1", label: "Somente eu" },
+  { value: "2", label: "2 Pessoas" },
+  { value: "3", label: "3 Pessoas" },
+  { value: "4", label: "4 Pessoas" },
+  { value: "5", label: "5 Pessoas" },
+  { value: "6", label: "6 Pessoas" },
+];
+
+/**
+ * Build WhatsApp message from form data
+ */
+const buildWhatsAppMessage = (data: RSVPFormData): string => {
+  const attendingText = data.attending === "yes"
+    ? "Sim, estarei presente!"
+    : "Infelizmente não poderei comparecer";
+
+  let message = `*Confirmação de Presença - Casamento ${COUPLE.displayName}*%0A%0A` +
+    `*Nome:* ${data.name}%0A` +
+    `*Telefone:* ${data.phone}%0A` +
+    `*Presença:* ${attendingText}%0A` +
+    `*Quantidade de pessoas:* ${data.guests}`;
+
+  if (data.message) {
+    message += `%0A*Recado:* ${data.message}`;
+  }
+
+  return message;
+};
+
+/**
+ * RSVP Section Component
+ * Form for guests to confirm their attendance
+ */
 const RSVPSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    attending: "yes",
-    guests: "1",
-    song: "",
-    message: "",
-  });
 
+  const [formData, setFormData] = useState<RSVPFormData>(INITIAL_FORM_DATA);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const message = `*Confirmação de Presença - Casamento Eduardo & Nicole*%0A%0A` +
-      `*Nome:* ${formData.name}%0A` +
-      `*Telefone:* ${formData.phone}%0A` +
-      `*Presença:* ${formData.attending === "yes" ? "Sim, estarei presente!" : "Infelizmente não poderei comparecer"}%0A` +
-      `*Quantidade de pessoas:* ${formData.guests}%0A` +
-      (formData.song ? `*Música sugerida:* ${formData.song}%0A` : "") +
-      (formData.message ? `*Recado:* ${formData.message}` : "");
-
-    window.open(`https://wa.me/5551996662954?text=${message}`, "_blank");
+    const message = buildWhatsAppMessage(formData);
+    window.open(CONTACT.whatsappUrl(message), "_blank");
 
     toast({
       title: "Redirecionando para o WhatsApp",
@@ -46,30 +80,23 @@ const RSVPSection = () => {
   };
 
   return (
-    <section id="confirmacao" className="py-24 md:py-36 bg-background relative overflow-hidden" ref={ref}>
+    <section id="confirmacao" className="py-24 md:py-36 bg-[#fdfcf9] relative overflow-hidden" ref={ref}>
+      <BackgroundPattern opacity={100} />
+
       {/* Decorative elements */}
-      <div className="absolute top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
-      
+      <div className="absolute top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl pointer-events-none" />
+
       <div className="max-w-3xl mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <p className="font-heading text-accent uppercase tracking-[0.3em] text-xs mb-4">
-            Sua Presença
-          </p>
-          <h2 className="font-script text-4xl md:text-6xl text-primary">
-            Confirme sua Presença
-          </h2>
-          <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent mx-auto mt-6" />
-          <div className="inline-flex items-center gap-2 mt-6 bg-primary/10 text-primary px-5 py-2 rounded-full">
-            <Heart className="w-4 h-4" />
-            <p className="font-body text-sm">Confirmação até 13/02/2026</p>
-          </div>
-        </motion.div>
+        <AnimatedSectionHeader
+          isInView={isInView}
+          subtitle={SECTION_TITLES.rsvp.subtitle}
+          title={SECTION_TITLES.rsvp.title}
+          badge={{
+            icon: <Heart className="w-4 h-4" />,
+            text: `Confirmação até ${WEDDING.confirmationDeadline}`,
+          }}
+        />
 
         <motion.form
           initial={{ opacity: 0, y: 30 }}
@@ -119,11 +146,12 @@ const RSVPSection = () => {
                 Você poderá comparecer?
               </label>
               <div className="grid grid-cols-2 gap-4">
-                <label className={`flex items-center justify-center gap-2 py-4 px-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
-                  formData.attending === "yes" 
-                    ? "border-primary bg-primary/10 shadow-lg shadow-primary/10" 
-                    : "border-border hover:border-primary/30"
-                }`}>
+                <label
+                  className={`flex items-center justify-center gap-2 py-4 px-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${formData.attending === "yes"
+                      ? "border-primary bg-primary/10 shadow-lg shadow-primary/10"
+                      : "border-border hover:border-primary/30"
+                    }`}
+                >
                   <input
                     type="radio"
                     name="attending"
@@ -134,11 +162,12 @@ const RSVPSection = () => {
                   />
                   <span className="font-heading text-lg">Sim, estarei lá!</span>
                 </label>
-                <label className={`flex items-center justify-center gap-2 py-4 px-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
-                  formData.attending === "no" 
-                    ? "border-primary bg-primary/10 shadow-lg shadow-primary/10" 
-                    : "border-border hover:border-primary/30"
-                }`}>
+                <label
+                  className={`flex items-center justify-center gap-2 py-4 px-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${formData.attending === "no"
+                      ? "border-primary bg-primary/10 shadow-lg shadow-primary/10"
+                      : "border-border hover:border-primary/30"
+                    }`}
+                >
                   <input
                     type="radio"
                     name="attending"
@@ -169,31 +198,14 @@ const RSVPSection = () => {
                   onChange={handleChange}
                   className="w-full px-5 py-4 rounded-xl border border-border bg-background font-body focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all appearance-none"
                 >
-                  <option value="1">Somente eu</option>
-                  <option value="2">2 Pessoas</option>
-                  <option value="3">3 Pessoas</option>
-                  <option value="4">4 Pessoas</option>
-                  <option value="5">5 Pessoas</option>
-                  <option value="6">6 Pessoas</option>
+                  {GUEST_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
               </motion.div>
             )}
-
-            {/* Song */}
-            <div>
-              <label className="flex items-center gap-2 font-body text-sm text-foreground mb-3">
-                <Music className="w-4 h-4 text-primary/70" />
-                Música que não pode faltar
-              </label>
-              <input
-                type="text"
-                name="song"
-                value={formData.song}
-                onChange={handleChange}
-                className="w-full px-5 py-4 rounded-xl border border-border bg-background font-body focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all"
-                placeholder="Sugira uma música (opcional)"
-              />
-            </div>
 
             {/* Message */}
             <div>

@@ -7,43 +7,47 @@
 @layer base {
   :root {
     /* Wedding palette - warm earthy tones */
-    --background: 43 100% 97%; /* #fffaef - Laranja Claro */
+    --background: 43 100% 97%;
+    /* #fffaef - Laranja Claro */
     --foreground: 25 30% 18%;
-    
+
     --card: 43 80% 96%;
     --card-foreground: 25 30% 18%;
-    
+
     --popover: 43 100% 97%;
     --popover-foreground: 25 30% 18%;
-    
-    --primary: 15 95% 31%; /* #992704 - Marrom Vivido */
+
+    --primary: 15 95% 31%;
+    /* #992704 - Marrom Vivido */
     --primary-foreground: 43 100% 97%;
-    
-    --secondary: 37 30% 52%; /* #bfa77f - Laranja apagado */
+
+    --secondary: 37 30% 52%;
+    /* #bfa77f - Laranja apagado */
     --secondary-foreground: 43 100% 97%;
-    
+
     --muted: 40 20% 85%;
     --muted-foreground: 25 20% 45%;
-    
-    --accent: 44 26% 43%; /* #867d55 - Amarelo Apagado */
+
+    --accent: 44 26% 43%;
+    /* #867d55 - Amarelo Apagado */
     --accent-foreground: 43 100% 97%;
-    
+
     --destructive: 0 84% 60%;
     --destructive-foreground: 43 100% 97%;
-    
+
     --border: 37 25% 82%;
     --input: 37 25% 82%;
     --ring: 15 95% 31%;
-    
+
     --radius: 0.75rem;
-    
+
     /* Custom wedding colors */
     --wedding-cream: 43 100% 97%;
     --wedding-gold: 37 30% 52%;
     --wedding-brown: 15 95% 31%;
     --wedding-olive: 44 26% 43%;
     --wedding-tan: 28 28% 40%;
-    
+
     /* Sidebar colors */
     --sidebar-background: 43 100% 97%;
     --sidebar-foreground: 25 30% 18%;
@@ -58,32 +62,32 @@
   .dark {
     --background: 25 30% 8%;
     --foreground: 43 100% 97%;
-    
+
     --card: 25 30% 12%;
     --card-foreground: 43 100% 97%;
-    
+
     --popover: 25 30% 12%;
     --popover-foreground: 43 100% 97%;
-    
+
     --primary: 37 35% 58%;
     --primary-foreground: 25 30% 8%;
-    
+
     --secondary: 15 70% 40%;
     --secondary-foreground: 43 100% 97%;
-    
+
     --muted: 25 20% 20%;
     --muted-foreground: 40 20% 70%;
-    
+
     --accent: 44 26% 50%;
     --accent-foreground: 43 100% 97%;
-    
+
     --destructive: 0 62% 30%;
     --destructive-foreground: 43 100% 97%;
-    
+
     --border: 25 20% 22%;
     --input: 25 20% 22%;
     --ring: 37 35% 58%;
-    
+
     --sidebar-background: 25 30% 8%;
     --sidebar-foreground: 43 100% 97%;
     --sidebar-primary: 37 35% 58%;
@@ -99,11 +103,11 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground font-body antialiased;
   }
-  
+
   html {
     scroll-behavior: smooth;
   }
@@ -117,25 +121,25 @@
   .wedding-section {
     @apply py-20 md:py-32 px-4;
   }
-  
+
   .wedding-container {
     @apply max-w-6xl mx-auto;
   }
-  
+
   .wedding-title {
     @apply font-script text-4xl md:text-6xl text-primary mb-4;
   }
-  
+
   .wedding-subtitle {
     @apply font-heading text-sm md:text-base text-accent uppercase tracking-[0.3em] mb-8;
   }
-  
+
   .glass-card {
     @apply bg-background/80 backdrop-blur-xl border border-border/30 rounded-2xl shadow-xl;
   }
 
   .premium-shadow {
-    box-shadow: 
+    box-shadow:
       0 4px 6px -1px rgba(0, 0, 0, 0.05),
       0 10px 15px -3px rgba(0, 0, 0, 0.08),
       0 20px 25px -5px rgba(0, 0, 0, 0.05);
@@ -150,15 +154,15 @@
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .animate-fade-in {
     animation: fadeIn 1s ease-out forwards;
   }
-  
+
   .animate-slide-up {
     animation: slideUp 0.8s ease-out forwards;
   }
-  
+
   .animate-float {
     animation: float 4s ease-in-out infinite;
   }
@@ -172,6 +176,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -182,6 +187,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -189,9 +195,12 @@
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-15px);
   }
@@ -201,6 +210,7 @@
   0% {
     background-position: -200% center;
   }
+
   100% {
     background-position: 200% center;
   }
