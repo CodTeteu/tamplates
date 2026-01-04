@@ -28,7 +28,8 @@
     /* HERO SECTION FIX */
     #inicio {
         padding-top: 0 !important;
-        margin-top: 0 !important;
+        margin-top: -1px !important;
+        /* Force overlap to kill gaps */
         top: 0 !important;
         min-height: 100dvh !important;
         /* Use dvh for better mobile support */
