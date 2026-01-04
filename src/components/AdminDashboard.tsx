@@ -279,10 +279,21 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
         }
     };
 
+    const handleUpdatePaymentStatus = async (id: string, newStatus: string) => {
+        try {
+            await GiftService.updatePaymentStatus(id, newStatus);
+            setPayments(prev => prev.map(p => p.id === id ? { ...p, status: newStatus as any } : p));
+        } catch (e) {
+            console.error("Error updating status:", e);
+            alert("Erro ao atualizar status.");
+        }
+    };
+
     // Summary Logic
     const totalGuests = records.reduce((acc, curr) => acc + curr.totalGuests, 0);
     const totalMoneyRSVP = records.reduce((acc, curr) => acc + curr.totalCost, 0);
-    const totalGiftsReceived = payments.reduce((acc, curr) => acc + curr.totalAmount, 0);
+    // Only count approved (received) gifts in the total
+    const totalGiftsReceived = payments.reduce((acc, curr) => (curr.status === 'approved' ? acc + curr.totalAmount : acc), 0);
 
 
     if (!currentUser) {
@@ -441,9 +452,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                                     <thead className="bg-muted text-xs uppercase font-bold text-muted-foreground border-b border-border">
                                         <tr>
                                             <th className="px-6 py-4">Nome</th>
-                                            <th className="px-6 py-4 text-center">Convidados</th>
-                                            <th className="px-6 py-4">Pagamento</th>
-                                            <th className="px-6 py-4 text-right">Valor</th>
+                                            <th className="px-6 py-4">Acompanhantes</th>
                                             <th className="px-6 py-4">Status</th>
                                             <th className="px-6 py-4 text-center">Ações</th>
                                         </tr>
@@ -455,18 +464,19 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                                                     <div className="font-bold text-foreground">{r.fullName}</div>
                                                     <div className="text-xs text-muted-foreground">{r.phone}</div>
                                                 </td>
-                                                <td className="px-6 py-4 text-center">
-                                                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-bold">{r.totalGuests}</span>
-                                                </td>
                                                 <td className="px-6 py-4">
-                                                    {r.paymentMethod === 'pix' ?
-                                                        <span className="text-green-600 font-bold text-xs uppercase">PIX</span> :
-                                                        r.paymentMethod === 'card' ?
-                                                            <span className="text-blue-600 font-bold text-xs uppercase">Cartão</span> :
-                                                            '-'}
-                                                </td>
-                                                <td className="px-6 py-4 text-right font-mono">
-                                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(r.totalCost)}
+                                                    {r.companions && r.companions.length > 0 ? (
+                                                        <ul className="list-disc list-inside text-xs">
+                                                            {r.companions.map((c, idx) => (
+                                                                <li key={idx} className="text-muted-foreground">
+                                                                    <span className="font-medium text-foreground">{c.name}</span>
+                                                                    {c.isChild && <span className="text-[10px] ml-1 opacity-70">(Criança)</span>}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    ) : (
+                                                        <span className="text-xs text-muted-foreground italic">Sem acompanhantes</span>
+                                                    )}
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${r.status === 'paid' ? 'bg-green-100 text-green-700' :
@@ -542,15 +552,18 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                                                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(payment.totalAmount)}
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${payment.status === 'approved' ? 'bg-green-100 text-green-700' :
-                                                        payment.status === 'pending' || payment.status === 'pending_confirmation' ? 'bg-yellow-100 text-yellow-700' :
-                                                            'bg-red-100 text-red-700'
-                                                        }`}>
-                                                        {payment.status === 'approved' ? 'Pago' :
-                                                            payment.status === 'pending' ? 'Pendente' :
-                                                                payment.status === 'pending_confirmation' ? 'Aguardando PIX' :
-                                                                    'Cancelado'}
-                                                    </span>
+                                                    <select
+                                                        value={payment.status}
+                                                        onChange={(e) => handleUpdatePaymentStatus(payment.id, e.target.value)}
+                                                        className={`px-2 py-1 rounded text-xs font-bold uppercase border-none outline-none cursor-pointer ${payment.status === 'approved' ? 'bg-green-100 text-green-700' :
+                                                            payment.status === 'pending' || payment.status === 'pending_confirmation' ? 'bg-yellow-100 text-yellow-700' :
+                                                                'bg-red-100 text-red-700'
+                                                            }`}
+                                                    >
+                                                        <option value="pending_confirmation">Aguardando PIX</option>
+                                                        <option value="approved">Recebido</option>
+                                                        <option value="cancelled">Cancelado</option>
+                                                    </select>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
                                                     <button

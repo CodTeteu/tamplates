@@ -31,23 +31,6 @@ export const CartDrawer: React.FC = () => {
         navigator.clipboard.writeText(PIX_KEY);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
-
-        // Save PIX payment to Firestore (only once)
-        if (!pixPaymentSaved && buyerName && items.length > 0) {
-            try {
-                await GiftService.savePixPayment({
-                    buyerName,
-                    buyerPhone,
-                    items: items.map(item => ({ id: item.id, name: item.name, price: item.price })),
-                    totalAmount: total,
-                    paymentMethod: 'pix'
-                });
-                setPixPaymentSaved(true);
-                console.log('PIX payment saved to Firestore');
-            } catch (err) {
-                console.error('Error saving PIX payment:', err);
-            }
-        }
     };
 
     const handleCheckout = () => {
@@ -57,8 +40,9 @@ export const CartDrawer: React.FC = () => {
     };
 
     const handlePayment = async () => {
-        if (!buyerName.trim()) {
-            setError('Por favor, informe seu nome completo');
+        // Validation of Full Name
+        if (!buyerName.trim() || buyerName.trim().split(/\s+/).length < 2) {
+            setError('Por favor, informe seu nome completo (Nome e Sobrenome)');
             return;
         }
         if (!buyerPhone.trim() || buyerPhone.length < 14) {
@@ -67,15 +51,29 @@ export const CartDrawer: React.FC = () => {
         }
 
         setError(null);
-
-        if (paymentMethod === 'pix') {
-            setCheckoutStep('pix-details');
-            return;
-        }
-
         setLoading(true);
 
         try {
+            // 1. Save locally to DB immediately
+            if (!pixPaymentSaved) {
+                await GiftService.createPayment({
+                    buyerName,
+                    buyerPhone,
+                    items: items.map(item => ({ id: item.id, name: item.name, price: item.price })),
+                    totalAmount: total,
+                    paymentMethod: paymentMethod === 'pix' ? 'pix' : 'card'
+                });
+                setPixPaymentSaved(true);
+            }
+
+            // 2. Proceed with flow
+            if (paymentMethod === 'pix') {
+                setCheckoutStep('pix-details');
+                setLoading(false);
+                return;
+            }
+
+            // Mercado Pago (Card)
             const data = await PaymentService.createPreference({
                 items: items.map(item => ({
                     id: item.id,
@@ -97,8 +95,10 @@ export const CartDrawer: React.FC = () => {
             } else {
                 throw new Error('URL de checkout não disponível');
             }
+
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Ocorreu um erro. Tente novamente.');
+            console.error(err);
+            setError(err instanceof Error ? err.message : 'Ocorreu um erro ao processar. Tente novamente.');
             setLoading(false);
         }
     };
@@ -418,20 +418,6 @@ export const CartDrawer: React.FC = () => {
                                 {/* WhatsApp Confirmation Button */}
                                 <button
                                     onClick={async () => {
-                                        if (!pixPaymentSaved && buyerName && items.length > 0) {
-                                            try {
-                                                await GiftService.savePixPayment({
-                                                    buyerName,
-                                                    buyerPhone,
-                                                    items: items.map(item => ({ id: item.id, name: item.name, price: item.price })),
-                                                    totalAmount: total,
-                                                    paymentMethod: 'pix'
-                                                });
-                                                setPixPaymentSaved(true);
-                                            } catch (err) {
-                                                console.error('Error saving PIX payment:', err);
-                                            }
-                                        }
                                         const message = `Olá ${COUPLE.displayName}! 💕\n\nAcabei de fazer um PIX com um presentinho especial para vocês! Que Deus abençoe muito essa união! 🎁✨`;
                                         window.open(`https://wa.me/${CONFIRMATION_PHONE}?text=${encodeURIComponent(message)}`, '_blank');
                                     }}

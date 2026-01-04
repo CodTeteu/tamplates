@@ -33,28 +33,41 @@ const GUEST_OPTIONS = [
 ];
 
 /**
+ * Helper to validate full name (at least 2 words)
+ */
+const isValidFullName = (name: string): boolean => {
+  return name.trim().split(/\s+/).length >= 2;
+};
+
+/**
  * Build WhatsApp message from form data
  */
 const buildWhatsAppMessage = (data: ExtendedRSVPFormData): string => {
-  const attendingText = data.attending === "yes"
-    ? "Sim, estarei presente!"
-    : "Infelizmente não poderei comparecer";
+  const isAttending = data.attending === "yes";
 
-  let message = `*Confirmação de Presença - Casamento ${COUPLE.displayName}*%0A%0A` +
-    `*Nome:* ${data.name}%0A` +
-    `*Telefone:* ${data.phone}%0A` +
-    `*Presença:* ${attendingText}%0A` +
-    `*Quantidade de pessoas:* ${data.guests}`;
+  let message = "";
 
-  if (data.attending === "yes" && data.companions.length > 0) {
-    const validCompanions = data.companions.filter(c => c.trim() !== "");
-    if (validCompanions.length > 0) {
-      message += `%0A*Acompanhantes:*%0A${validCompanions.map(c => `- ${c}`).join("%0A")}`;
+  if (isAttending) {
+    message = `Olá! Que alegria! Gostaria de confirmar minha presença no casamento de *${COUPLE.displayName}*! ❤️%0A%0A` +
+      `*Nome:* ${data.name}%0A` +
+      `*Telefone:* ${data.phone}%0A` +
+      `*Estarei lá:* Sim! 😍%0A` +
+      `*Total de pessoas:* ${data.guests}`;
+
+    if (data.companions.length > 0) {
+      const validCompanions = data.companions.filter(c => c.trim() !== "");
+      if (validCompanions.length > 0) {
+        message += `%0A%0A*Acompanhantes:* ✨%0A${validCompanions.map(c => `• ${c}`).join("%0A")}`;
+      }
     }
+  } else {
+    message = `Olá! Agradeço muito o convite para o casamento de *${COUPLE.displayName}*. ❤️%0A%0A` +
+      `*Nome:* ${data.name}%0A` +
+      `Infelizmente não poderei comparecer, mas desejo toda a felicidade do mundo aos noivos! ✨`;
   }
 
   if (data.message) {
-    message += `%0A*Recado:* ${data.message}`;
+    message += `%0A%0A*Meu recado para os noivos:* 💌%0A"${data.message}"`;
   }
 
   return message;
@@ -119,45 +132,79 @@ const RSVPSection = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // 0. Validation
+    if (!isValidFullName(formData.name)) {
+      toast({
+        title: "Nome incompleto",
+        description: "Por favor, digite seu nome e sobrenome.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate companions if attending
+    if (formData.attending === "yes") {
+      for (let i = 0; i < formData.companions.length; i++) {
+        const companionName = formData.companions[i];
+        if (companionName && !isValidFullName(companionName)) {
+          toast({
+            title: "Nome do acompanhante incompleto",
+            description: `Por favor, digite o nome e sobrenome do acompanhante ${i + 1}.`,
+            variant: "destructive"
+          });
+          return;
+        }
+      }
+    }
+
     setIsSubmitting(true);
 
     try {
       // 1. Prepare data for Database
+      let rsvpData: any = {
+        fullName: formData.name,
+        phone: formData.phone,
+        message: formData.message,
+        songRequest: "",
+      };
+
       if (formData.attending === "yes") {
         const companionsList = formData.companions
           .filter(c => c.trim() !== "")
           .map(name => ({ name, isChild: false }));
 
-        await RsvpService.create({
-          fullName: formData.name,
-          phone: formData.phone,
+        rsvpData = {
+          ...rsvpData,
           isAttending: true,
           totalGuests: parseInt(formData.guests),
           companions: companionsList,
-          paymentMethod: 'none', // Simple RSVP doesn't enforce payment method
+          paymentMethod: 'none',
           totalCost: 0,
-          message: formData.message,
-          songRequest: "",
           status: 'confirmed'
-        });
+        };
       } else {
-        // Log "Not Attending"
-        await RsvpService.create({
-          fullName: formData.name,
-          phone: formData.phone,
+        rsvpData = {
+          ...rsvpData,
           isAttending: false,
           totalGuests: 0,
           companions: [],
           paymentMethod: 'none',
           totalCost: 0,
-          message: formData.message,
-          songRequest: "",
           status: 'declined'
-        });
+        };
       }
+
+      // 2. Save to Database IMMEDIATELY
+      await RsvpService.create(rsvpData);
+
+      toast({
+        title: "Sucesso!",
+        description: "Seus dados foram salvos. Redirecionando para o WhatsApp...",
+      });
+
     } catch (error) {
       console.error("Erro ao salvar no banco de dados:", error);
-      // We continue to WhatsApp even if DB fails
       toast({
         title: "Aviso",
         description: "Houve um erro ao salvar no sistema, mas prossiga para o WhatsApp.",
@@ -165,16 +212,13 @@ const RSVPSection = () => {
       });
     }
 
-    // 2. Redirect to WhatsApp
-    const message = buildWhatsAppMessage(formData);
-    window.open(CONTACT.whatsappUrl(message), "_blank");
-
-    toast({
-      title: "Redirecionando para o WhatsApp",
-      description: "Complete a confirmação enviando a mensagem.",
-    });
-
-    setIsSubmitting(false);
+    // 3. Redirect to WhatsApp (Always happens, even if DB fails, as per fallback logic)
+    // Small delay to ensure user sees the success toast if DB worked
+    setTimeout(() => {
+      const message = buildWhatsAppMessage(formData);
+      window.open(CONTACT.whatsappUrl(message), "_blank");
+      setIsSubmitting(false);
+    }, 1000);
   };
 
   return (

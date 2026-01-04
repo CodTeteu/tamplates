@@ -182,34 +182,50 @@ export const GiftService = {
         if (error) throw error;
     },
 
-    async savePixPayment(data: {
+    async createPayment(data: {
         buyerName: string;
         buyerPhone: string;
         items: { id: string; name: string; price: number }[];
         totalAmount: number;
-        paymentMethod: 'pix';
+        paymentMethod: 'pix' | 'card';
     }): Promise<string> {
         if (!isSupabaseConfigured || !supabase) {
-            console.warn('Supabase not configured. PIX payment not saved to database.');
+            console.warn('Supabase not configured. Payment not saved to database.');
             return 'offline-' + Date.now();
         }
+
+        const status = data.paymentMethod === 'pix' ? 'pending_confirmation' : 'pending';
 
         const { data: result, error } = await supabase
             .from('gift_payments')
             .insert({
                 buyer_name: data.buyerName,
-                buyer_email: `${data.buyerPhone.replace(/\D/g, '')}@pix.casamento.com`,
+                buyer_email: `${data.buyerPhone.replace(/\D/g, '')}@${data.paymentMethod}.casamento.com`,
                 buyer_phone: data.buyerPhone,
                 items: data.items,
                 total_amount: data.totalAmount,
-                payment_method: 'pix',
-                status: 'pending_confirmation'
+                payment_method: data.paymentMethod,
+                status: status
             })
             .select('id')
             .single();
 
         if (error) throw error;
         return result.id;
+    },
+
+    async updatePaymentStatus(id: string, status: string): Promise<void> {
+        if (!isSupabaseConfigured || !supabase) {
+            console.warn('Supabase not configured. Cannot update payment status.');
+            return;
+        }
+
+        const { error } = await supabase
+            .from('gift_payments')
+            .update({ status })
+            .eq('id', id);
+
+        if (error) throw error;
     },
 
     async seedGifts(gifts: Gift[]) {
