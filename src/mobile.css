@@ -15,10 +15,24 @@
         padding-bottom: 2.5rem !important;
     }
 
+    /* GLOBAL MOBILE RESET */
+    html,
+    body,
+    #root,
+    main {
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow-x: hidden !important;
+    }
+
+    /* HERO SECTION FIX */
     #inicio {
         padding-top: 0 !important;
         margin-top: 0 !important;
         top: 0 !important;
+        min-height: 100dvh !important;
+        /* Use dvh for better mobile support */
+        height: 100dvh !important;
     }
 
     /* Even more compact for specific sections */
