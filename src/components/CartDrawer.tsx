@@ -382,7 +382,7 @@ export const CartDrawer: React.FC = () => {
                                 <div className="flex justify-center">
                                     <div className="bg-background p-3 rounded-2xl border-2 border-border shadow-lg">
                                         <img
-                                            src="/qrcode_pix.png"
+                                            src="/images/qrcode-pix.png"
                                             alt="QR Code PIX"
                                             className="w-36 h-36 object-contain"
                                         />
