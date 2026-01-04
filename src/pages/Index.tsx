@@ -51,8 +51,8 @@ const Index = () => {
         <link rel="canonical" href="/" />
       </Helmet>
 
-      <Navigation />
-      <div className="overflow-x-hidden">
+      <div className="min-h-screen flex flex-col relative overflow-x-hidden">
+        <Navigation />
         <HeroSection />
         <OurStorySection />
         <GallerySection />

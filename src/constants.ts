@@ -159,19 +159,19 @@ export const GUEST_MANUAL = [
     {
         id: "dresscode",
         title: "O que vestir",
-        description: "Traje Esporte Fino. Pedimos gentilmente que evitem as cores Branco, Fúcsia e Rosa Pink.",
+        description: "Traje Esporte Fino. Sinta-se à vontade para vestir o que lhe fizer sentir bem.",
         icon: "shirt",
     },
     {
         id: "parking",
         title: "Estacionamento",
-        description: "Haverá estacionamento gratuito e seguro no local para todos os convidados.",
+        description: "Haverá estacionamento gratuito e seguro no local (dentro do shopping) para todos os convidados.",
         icon: "car",
     },
     {
         id: "photos",
         title: "Muitas fotos",
-        description: "Amamos fotos! Registre cada momento e compartilhe conosco usando nossa hashtag.",
+        description: "Amamos fotos! Registre cada momento e compartilhe conosco! 📸",
         icon: "camera",
     },
     {

@@ -27,7 +27,7 @@ const HeroSection = () => {
     <section id="inicio" className="relative h-screen min-h-[600px] flex items-center justify-center text-center overflow-hidden">
       {/* Background Image - Fixed on Desktop, Scroll on Mobile for performance/compatibility */}
       <div
-        className="absolute inset-0 z-0 bg-cover bg-center md:bg-fixed"
+        className="absolute inset-0 z-0 bg-cover bg-[center_top] md:bg-[center_45%]"
         style={{
           backgroundImage: `url(${coupleImage})`
         }}
@@ -36,91 +36,77 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80"></div>
       </div>
 
-      <div className="relative z-10 px-4 w-full max-w-5xl mx-auto flex flex-col items-center justify-center h-full pt-16 md:pt-0">
+      <div className="relative z-10 px-4 w-full max-w-5xl mx-auto flex flex-col items-center justify-between h-full pt-20 pb-12 md:py-20">
 
-        {/* Names at top area */}
-        <motion.p
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="font-heading text-[#fffaef]/90 text-xs md:text-sm uppercase tracking-[0.4em] mb-4 md:mb-6"
-        >
-          Casamento
-        </motion.p>
-
-        <motion.h1
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="font-script text-5xl md:text-7xl lg:text-8xl text-[#fffaef] drop-shadow-2xl mb-6 md:mb-10"
-          style={{ textShadow: "0 4px 30px rgba(0,0,0,0.5)" }}
-        >
-          {COUPLE.displayName}
-        </motion.h1>
-
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: "120px" }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="h-[1px] bg-gradient-to-r from-transparent via-[#fffaef]/60 to-transparent mb-8 md:mb-12"
-        />
-
-        {/* Date & Location */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="flex flex-col md:flex-row items-center gap-4 text-[#fffaef]/90 mb-8"
-        >
-          <div className="flex items-center gap-2 backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full border border-white/10 hover:bg-black/30 transition-colors">
-            <Calendar className="w-4 h-4" />
-            <span className="font-heading text-sm md:text-base tracking-wide">
-              {WEDDING.dateFormatted}
+        {/* --- TOP SECTION --- */}
+        <div className="flex flex-col items-center mt-4 md:mt-0 w-full">
+          {/* Label Pill */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="border border-[#fffaef]/30 bg-black/20 backdrop-blur-sm px-6 py-1.5 rounded-full mb-6 md:mb-8"
+          >
+            <span className="font-heading text-[#fffaef] text-[10px] md:text-xs uppercase tracking-[0.3em]">
+              Save the Date
             </span>
-          </div>
-          <div className="flex items-center gap-2 backdrop-blur-sm bg-black/20 px-4 py-2 rounded-full border border-white/10 hover:bg-black/30 transition-colors">
-            <MapPin className="w-4 h-4" />
-            <span className="font-heading text-sm md:text-base tracking-wide">
-              {VENUE.name}
-            </span>
-          </div>
-        </motion.div>
+          </motion.div>
 
-        {/* Countdown */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="grid grid-cols-4 gap-3 max-w-[320px] md:max-w-md w-full mb-10"
-        >
-          {countdownItems.map((item) => (
-            <div
-              key={item.label}
-              className="bg-black/20 backdrop-blur-md border border-[#fffaef]/10 rounded-lg py-3 px-1 flex flex-col items-center justify-center transform hover:scale-105 transition-transform"
-            >
-              <span className="font-heading text-xl md:text-3xl font-light text-[#fffaef] tracking-wide leading-none mb-1">
-                {String(item.value).padStart(2, "0")}
-              </span>
-              <span className="font-body text-[9px] md:text-xs uppercase tracking-widest text-[#fffaef]/70">
-                {item.label}
-              </span>
-            </div>
-          ))}
-        </motion.div>
+          {/* Names */}
+          <motion.h1
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="font-script text-6xl md:text-8xl lg:text-9xl text-[#fffaef] drop-shadow-2xl mb-6 md:mb-8 text-center leading-none"
+            style={{ textShadow: "0 4px 30px rgba(0,0,0,0.5)" }}
+          >
+            {COUPLE.groom}
+            <span className="block text-2xl md:text-4xl my-2 font-heading tracking-widest uppercase opacity-80">&</span>
+            {COUPLE.bride}
+          </motion.h1>
 
-        <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ duration: 0.8, delay: 0.9 }}
-          onClick={scrollToConfirmation}
-          className="group relative overflow-hidden bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-10 py-4 rounded-full font-heading text-base tracking-wide hover:shadow-2xl hover:shadow-primary/30 transition-all duration-500"
-        >
-          <span className="relative z-10">Confirmar Presença</span>
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        </motion.button>
 
+        </div>
+
+        {/* --- BOTTOM SECTION --- */}
+        <div className="flex flex-col items-center w-full max-w-md mx-auto mb-6 md:mb-0">
+
+          {/* Countdown (Wider) */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+            className="grid grid-cols-4 gap-3 w-full max-w-[340px] md:max-w-md mb-8"
+          >
+            {countdownItems.map((item) => (
+              <div
+                key={item.label}
+                className="bg-black/20 backdrop-blur-md border border-[#fffaef]/10 rounded-xl py-3 flex flex-col items-center justify-center transform hover:scale-105 transition-transform"
+              >
+                <span className="font-heading text-xl md:text-4xl font-light text-[#fffaef] tracking-wide leading-none mb-0.5">
+                  {String(item.value).padStart(2, "0")}
+                </span>
+                <span className="font-body text-[8px] md:text-[10px] uppercase tracking-widest text-[#fffaef]/70">
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* CTA Button */}
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.02, backgroundColor: "rgba(0,0,0,0.4)" }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.3 }}
+            onClick={scrollToConfirmation}
+            className="group w-auto relative overflow-hidden bg-black/20 backdrop-blur-md border border-[#fffaef]/30 text-[#fffaef] py-3.5 px-10 rounded-full font-heading text-xs md:text-base tracking-[0.2em] uppercase hover:border-[#fffaef]/60 transition-all duration-300 flex items-center justify-center gap-2 mb-4"
+          >
+            <span className="relative z-10 font-bold whitespace-nowrap">Confirmar Presença</span>
+            <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+          </motion.button>
+        </div>
       </div>
 
       <motion.div

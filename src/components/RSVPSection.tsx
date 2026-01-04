@@ -1,19 +1,26 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef, useState } from "react";
-import { Send, User, Phone, Users, MessageCircle, Heart } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
+import { Send, User, Phone, Users, MessageCircle, Heart, UserPlus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import BackgroundPattern from "@/components/ui/BackgroundPattern";
 import { AnimatedSectionHeader } from "@/components/ui/SectionHeader";
 import { SECTION_TITLES, WEDDING, COUPLE, CONTACT } from "@/constants";
-import type { RSVPFormData } from "@/types";
+import { RsvpService } from "@/services";
+import type { RSVPFormData as BaseRSVPFormData } from "@/types";
 
-const INITIAL_FORM_DATA: RSVPFormData = {
+// Extended form data to include companions
+interface ExtendedRSVPFormData extends BaseRSVPFormData {
+  companions: string[];
+}
+
+const INITIAL_FORM_DATA: ExtendedRSVPFormData = {
   name: "",
   phone: "",
   attending: "yes",
   guests: "1",
   message: "",
+  companions: [],
 };
 
 const GUEST_OPTIONS = [
@@ -28,7 +35,7 @@ const GUEST_OPTIONS = [
 /**
  * Build WhatsApp message from form data
  */
-const buildWhatsAppMessage = (data: RSVPFormData): string => {
+const buildWhatsAppMessage = (data: ExtendedRSVPFormData): string => {
   const attendingText = data.attending === "yes"
     ? "Sim, estarei presente!"
     : "Infelizmente não poderei comparecer";
@@ -38,6 +45,13 @@ const buildWhatsAppMessage = (data: RSVPFormData): string => {
     `*Telefone:* ${data.phone}%0A` +
     `*Presença:* ${attendingText}%0A` +
     `*Quantidade de pessoas:* ${data.guests}`;
+
+  if (data.attending === "yes" && data.companions.length > 0) {
+    const validCompanions = data.companions.filter(c => c.trim() !== "");
+    if (validCompanions.length > 0) {
+      message += `%0A*Acompanhantes:*%0A${validCompanions.map(c => `- ${c}`).join("%0A")}`;
+    }
+  }
 
   if (data.message) {
     message += `%0A*Recado:* ${data.message}`;
@@ -54,8 +68,39 @@ const RSVPSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
-  const [formData, setFormData] = useState<RSVPFormData>(INITIAL_FORM_DATA);
+  const [formData, setFormData] = useState<ExtendedRSVPFormData>(INITIAL_FORM_DATA);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Update companions array size when number of guests changes
+  useEffect(() => {
+    const numGuests = parseInt(formData.guests);
+    const numCompanions = Math.max(0, numGuests - 1);
+
+    setFormData(prev => {
+      const currentCompanions = [...prev.companions];
+
+      // If we need more slots, add empty strings
+      if (currentCompanions.length < numCompanions) {
+        return {
+          ...prev,
+          companions: [
+            ...currentCompanions,
+            ...Array(numCompanions - currentCompanions.length).fill("")
+          ]
+        };
+      }
+
+      // If we have too many slots, trim the end
+      if (currentCompanions.length > numCompanions) {
+        return {
+          ...prev,
+          companions: currentCompanions.slice(0, numCompanions)
+        };
+      }
+
+      return prev;
+    });
+  }, [formData.guests]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -64,10 +109,63 @@ const RSVPSection = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleCompanionChange = (index: number, value: string) => {
+    setFormData(prev => {
+      const newCompanions = [...prev.companions];
+      newCompanions[index] = value;
+      return { ...prev, companions: newCompanions };
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    try {
+      // 1. Prepare data for Database
+      if (formData.attending === "yes") {
+        const companionsList = formData.companions
+          .filter(c => c.trim() !== "")
+          .map(name => ({ name, isChild: false }));
+
+        await RsvpService.create({
+          fullName: formData.name,
+          phone: formData.phone,
+          isAttending: true,
+          totalGuests: parseInt(formData.guests),
+          companions: companionsList,
+          paymentMethod: 'none', // Simple RSVP doesn't enforce payment method
+          totalCost: 0,
+          message: formData.message,
+          songRequest: "",
+          status: 'confirmed'
+        });
+      } else {
+        // Log "Not Attending"
+        await RsvpService.create({
+          fullName: formData.name,
+          phone: formData.phone,
+          isAttending: false,
+          totalGuests: 0,
+          companions: [],
+          paymentMethod: 'none',
+          totalCost: 0,
+          message: formData.message,
+          songRequest: "",
+          status: 'declined'
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao salvar no banco de dados:", error);
+      // We continue to WhatsApp even if DB fails
+      toast({
+        title: "Aviso",
+        description: "Houve um erro ao salvar no sistema, mas prossiga para o WhatsApp.",
+        variant: "destructive"
+      });
+    }
+
+    // 2. Redirect to WhatsApp
     const message = buildWhatsAppMessage(formData);
     window.open(CONTACT.whatsappUrl(message), "_blank");
 
@@ -148,8 +246,8 @@ const RSVPSection = () => {
               <div className="grid grid-cols-2 gap-4">
                 <label
                   className={`flex items-center justify-center gap-2 py-4 px-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${formData.attending === "yes"
-                      ? "border-primary bg-primary/10 shadow-lg shadow-primary/10"
-                      : "border-border hover:border-primary/30"
+                    ? "border-primary bg-primary/10 shadow-lg shadow-primary/10"
+                    : "border-border hover:border-primary/30"
                     }`}
                 >
                   <input
@@ -164,8 +262,8 @@ const RSVPSection = () => {
                 </label>
                 <label
                   className={`flex items-center justify-center gap-2 py-4 px-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${formData.attending === "no"
-                      ? "border-primary bg-primary/10 shadow-lg shadow-primary/10"
-                      : "border-border hover:border-primary/30"
+                    ? "border-primary bg-primary/10 shadow-lg shadow-primary/10"
+                    : "border-border hover:border-primary/30"
                     }`}
                 >
                   <input
@@ -181,29 +279,55 @@ const RSVPSection = () => {
               </div>
             </div>
 
-            {/* Number of Guests */}
+            {/* Number of Guests & Companion Names */}
             {formData.attending === "yes" && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
+                className="space-y-6"
               >
-                <label className="flex items-center gap-2 font-body text-sm text-foreground mb-3">
-                  <Users className="w-4 h-4 text-primary/70" />
-                  Quantas pessoas irão com você?
-                </label>
-                <select
-                  name="guests"
-                  value={formData.guests}
-                  onChange={handleChange}
-                  className="w-full px-5 py-4 rounded-xl border border-border bg-background font-body focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all appearance-none"
-                >
-                  {GUEST_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                <div>
+                  <label className="flex items-center gap-2 font-body text-sm text-foreground mb-3">
+                    <Users className="w-4 h-4 text-primary/70" />
+                    Quantas pessoas irão com você (incluindo você)?
+                  </label>
+                  <select
+                    name="guests"
+                    value={formData.guests}
+                    onChange={handleChange}
+                    className="w-full px-5 py-4 rounded-xl border border-border bg-background font-body focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all appearance-none"
+                  >
+                    {GUEST_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Dynamic Companion Inputs */}
+                {formData.companions.length > 0 && (
+                  <div className="pl-4 border-l-2 border-primary/20 space-y-4">
+                    <p className="text-xs font-bold uppercase text-primary tracking-wider mb-2">Nome dos Acompanhantes</p>
+                    {formData.companions.map((name, index) => (
+                      <div key={index}>
+                        <label className="flex items-center gap-2 font-body text-xs text-muted-foreground mb-1">
+                          <UserPlus className="w-3 h-3" />
+                          Acompanhante {index + 1}
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={name}
+                          onChange={(e) => handleCompanionChange(index, e.target.value)}
+                          className="w-full px-4 py-3 rounded-lg border border-border bg-background text-sm font-body focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+                          placeholder={`Nome do acompanhante ${index + 1}`}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             )}
 
@@ -230,7 +354,7 @@ const RSVPSection = () => {
               className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground py-5 rounded-full font-heading text-lg tracking-wide hover:shadow-2xl hover:shadow-primary/30 transition-all duration-300 disabled:opacity-50"
             >
               <Send className="w-5 h-5" />
-              Confirmar via WhatsApp
+              {isSubmitting ? "Salvando..." : "Confirmar via WhatsApp"}
             </button>
           </div>
         </motion.form>

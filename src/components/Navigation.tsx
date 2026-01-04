@@ -4,7 +4,7 @@ import { Menu, X, Settings } from "lucide-react";
 import { NAV_ITEMS, COUPLE } from "@/constants";
 import type { NavItem } from "@/types";
 
-const SCROLL_THRESHOLD = 10;
+const SCROLL_THRESHOLD = 50;
 
 /**
  * Navigation Component
@@ -51,14 +51,14 @@ const Navigation = () => {
   return (
     <>
       {/* Main Navigation Bar */}
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: (isScrolled || isMobileMenuOpen) ? 0 : -100 }}
-        transition={{ duration: 0.6 }}
-        className={`mobile-nav z-50 transition-all duration-500 ${isScrolled || isMobileMenuOpen
-          ? "fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-xl shadow-lg border-b border-border/30 py-3 md:py-4"
-          : "absolute top-0 left-0 right-0 bg-transparent py-4 md:py-8"
+      <nav
+        className={`z-50 transition-all duration-500 fixed top-0 left-0 right-0 ${isScrolled || isMobileMenuOpen
+          ? "shadow-lg border-b border-border/30 py-2 md:py-4"
+          : "py-2 md:py-8"
           }`}
+        style={{
+          backgroundColor: (isScrolled || isMobileMenuOpen) ? "rgba(255, 250, 239, 0.95)" : "transparent"
+        }}
       >
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex items-center justify-between h-14 md:h-16">
@@ -99,7 +99,7 @@ const Navigation = () => {
             </button>
           </div>
         </div>
-      </motion.nav>
+      </nav>
 
       {/* Mobile Menu - Backdrop */}
       <AnimatePresence>
