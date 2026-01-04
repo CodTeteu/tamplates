@@ -142,7 +142,7 @@ const GiftsSection = () => {
                 {/* PIX QR Code */}
                 <div className="bg-white p-3 rounded-xl border-2 border-border shadow-sm">
                   <img
-                    src="/qrcode_pix.png"
+                    src="/images/qrcode-pix.png"
                     alt="QR Code PIX"
                     className="w-52 h-52 object-contain"
                     onError={(e) => {
