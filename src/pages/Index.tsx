@@ -52,7 +52,7 @@ const Index = () => {
       </Helmet>
 
       <Navigation />
-      <main className="overflow-hidden">
+      <div className="overflow-x-hidden">
         <HeroSection />
         <OurStorySection />
         <GallerySection />
@@ -61,7 +61,7 @@ const Index = () => {
         <GiftsSection />
         <RSVPSection />
         <Footer />
-      </main>
+      </div>
 
       {/* Mobile Floating CTA */}
       <div
