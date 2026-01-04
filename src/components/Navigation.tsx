@@ -55,9 +55,9 @@ const Navigation = () => {
         initial={{ y: -100 }}
         animate={{ y: (isScrolled || isMobileMenuOpen) ? 0 : -100 }}
         transition={{ duration: 0.6 }}
-        className={`mobile-nav fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled || isMobileMenuOpen
-          ? "bg-background/95 backdrop-blur-xl shadow-lg border-b border-border/30 py-3 md:py-4"
-          : "bg-transparent py-4 md:py-8"
+        className={`mobile-nav z-50 transition-all duration-500 ${isScrolled || isMobileMenuOpen
+          ? "fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-xl shadow-lg border-b border-border/30 py-3 md:py-4"
+          : "absolute top-0 left-0 right-0 bg-transparent py-4 md:py-8"
           }`}
       >
         <div className="max-w-7xl mx-auto px-4 md:px-6">
