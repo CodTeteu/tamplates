@@ -41,7 +41,14 @@ const images: GalleryImage[] = [
  */
 const GallerySection = () => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const inView = useInView(ref, { margin: "-100px" });
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    if (inView) {
+      setIsInView(true);
+    }
+  }, [inView]);
   const [api, setApi] = useState<CarouselApi>();
 
   const scrollToNext = useCallback(() => {
@@ -59,7 +66,7 @@ const GallerySection = () => {
     <section className="py-20 md:py-32 bg-[#fdfcf9] overflow-hidden relative" ref={ref}>
       <BackgroundPattern opacity={100} />
 
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 relative z-10">
         <AnimatedSectionHeader
           isInView={isInView}
           subtitle={SECTION_TITLES.gallery.subtitle}

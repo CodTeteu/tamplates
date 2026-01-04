@@ -43,7 +43,7 @@ const MenuSection = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative order-2 lg:order-1"
+            className="relative"
           >
             <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-xl border-4 border-white/50 group">
               <img
@@ -66,7 +66,7 @@ const MenuSection = () => {
             initial={{ opacity: 0, x: 50 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="flex flex-col justify-between h-full bg-white/80 backdrop-blur-sm p-8 md:p-12 rounded-3xl shadow-lg border border-primary/10 order-1 lg:order-2"
+            className="flex flex-col justify-between h-full bg-white/80 backdrop-blur-sm p-8 md:p-12 rounded-3xl shadow-lg border border-primary/10"
           >
             <div className="space-y-8">
               {/* Entrada */}

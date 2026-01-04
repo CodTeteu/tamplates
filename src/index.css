@@ -233,3 +233,6 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground));
 }
+
+/* Import mobile-specific styles */
+@import './mobile.css';

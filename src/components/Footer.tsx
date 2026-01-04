@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { Heart, Settings } from "lucide-react";
 import { COUPLE, WEDDING, BIBLE_VERSE } from "@/constants";
 
 /**
@@ -34,6 +34,15 @@ const Footer = () => {
             — {BIBLE_VERSE.reference}
           </span>
         </p>
+
+        {/* Admin access link - styled like source project */}
+        <a
+          href="/admin"
+          className="inline-flex items-center gap-2 mt-6 px-6 py-2 border border-background/20 rounded hover:bg-background/10 hover:border-background/40 transition-all text-[10px] uppercase tracking-widest text-background/50 hover:text-background"
+        >
+          <Settings className="w-3 h-3" />
+          Painel Admin
+        </a>
       </div>
     </footer>
   );

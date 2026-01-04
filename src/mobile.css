@@ -1,0 +1,229 @@
+/*
+ * Mobile-Only Stylesheet
+ * All styles here apply ONLY to screens smaller than 768px (md breakpoint).
+ * Optimized for compact, touch-friendly mobile experience.
+ */
+
+@media (max-width: 767px) {
+
+    /* ========================================
+     SECTIONS - Compact Spacing
+     ======================================== */
+
+    section:not(#inicio) {
+        padding-top: 2.5rem !important;
+        padding-bottom: 2.5rem !important;
+    }
+
+    #inicio {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+        top: 0 !important;
+    }
+
+    /* Even more compact for specific sections */
+    .py-24,
+    .py-32,
+    .py-36 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+
+    .md\:py-32,
+    .md\:py-36 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+
+    /* ========================================
+     TYPOGRAPHY - Smaller on Mobile
+     ======================================== */
+
+    /* Large headings */
+    .text-4xl,
+    .text-5xl,
+    .text-6xl {
+        font-size: 1.75rem !important;
+        line-height: 1.2 !important;
+    }
+
+    .md\:text-5xl,
+    .md\:text-6xl,
+    .lg\:text-6xl {
+        font-size: 1.75rem !important;
+    }
+
+    /* Medium headings */
+    .text-3xl {
+        font-size: 1.5rem !important;
+    }
+
+    .text-2xl {
+        font-size: 1.25rem !important;
+    }
+
+    /* Body text */
+    .text-lg,
+    .md\:text-lg {
+        font-size: 0.9375rem !important;
+    }
+
+    .text-base {
+        font-size: 0.875rem !important;
+    }
+
+    /* Script fonts - keep larger for section titles */
+    .font-script {
+        font-size: 2.5rem !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Hero Title Override */
+    #inicio .font-script {
+        font-size: 3.5rem !important;
+        line-height: 1.1 !important;
+    }
+
+    /* ========================================
+     GAPS & MARGINS - Tighter
+     ======================================== */
+
+    .gap-16,
+    .gap-y-16 {
+        gap: 1.5rem !important;
+    }
+
+    .gap-12 {
+        gap: 1rem !important;
+    }
+
+    .gap-8 {
+        gap: 0.75rem !important;
+    }
+
+    .mb-16 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .mb-12 {
+        margin-bottom: 1rem !important;
+    }
+
+    .mb-8 {
+        margin-bottom: 0.75rem !important;
+    }
+
+    .mt-24 {
+        margin-top: 2rem !important;
+    }
+
+    .mt-16 {
+        margin-top: 1.5rem !important;
+    }
+
+    /* ========================================
+     GRID - Single Column
+     ======================================== */
+
+    .grid-cols-2,
+    .grid-cols-3,
+    .md\:grid-cols-2,
+    .md\:grid-cols-3,
+    .lg\:grid-cols-2,
+    .lg\:grid-cols-3 {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* ========================================
+     CARDS & CONTAINERS - Compact
+     ======================================== */
+
+    .p-8 {
+        padding: 1.25rem !important;
+    }
+
+    .p-6 {
+        padding: 1rem !important;
+    }
+
+    .px-8 {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .rounded-3xl {
+        border-radius: 1rem !important;
+    }
+
+    /* ========================================
+     NAVIGATION
+     ======================================== */
+
+    .mobile-nav {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+
+    .mobile-menu-btn svg {
+        width: 1.5rem !important;
+        height: 1.5rem !important;
+    }
+
+    /* ========================================
+     FORMS - Prevent Zoom
+     ======================================== */
+
+    input,
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+
+    /* ========================================
+     HERO - Compact
+     ======================================== */
+
+    .min-h-screen {
+        min-height: 85vh !important;
+    }
+
+    /* ========================================
+     ICONS & DECORATIONS - Smaller
+     ======================================== */
+
+    .w-16.h-16 {
+        width: 3rem !important;
+        height: 3rem !important;
+    }
+
+    .w-16.h-16 svg {
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+    }
+
+    /* ========================================
+     FLOATING CTA - Safe Area
+     ======================================== */
+
+    .mobile-floating-cta {
+        bottom: 1rem !important;
+        left: 0.75rem !important;
+        right: 0.75rem !important;
+    }
+
+    .mobile-floating-cta button {
+        padding: 0.75rem 1rem !important;
+        font-size: 0.65rem !important;
+    }
+
+    /* ========================================
+     TOUCH TARGETS
+     ======================================== */
+
+    button,
+    a,
+    [role="button"] {
+        min-height: 44px;
+    }
+
+}

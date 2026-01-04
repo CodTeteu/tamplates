@@ -31,6 +31,7 @@ export const VENUE = {
     name: "Galeto Mamma Mia",
     address: "Galeto Mamma Mia",
     mapsUrl: "https://maps.app.goo.gl/F9dTUnP1P6YEPWfA6",
+    wazeUrl: "https://waze.com/ul?ll=-30.0801,-51.1785&navigate=yes",
     mapsEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3469.8!2d-51.1!3d-29.9!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjnCsDU0JzAwLjAiUyA1McKwMDYnMDAuMCJX!5e0!3m2!1spt-BR!2sbr!4v1234567890",
 } as const;
 
@@ -150,21 +151,63 @@ export const SECTION_TITLES = {
 
 export const GUEST_MANUAL = [
     {
-        id: "photos",
-        title: "Tire muitas fotos",
-        description: "Registre cada momento e compartilhe conosco. Amamos ver nossa festa pelos seus olhos!",
-        icon: "camera",
-    },
-    {
         id: "punctuality",
         title: "Chegue no horário",
-        description: "A cerimônia começará pontualmente. Sua presença desde o início é muito importante para nós.",
+        description: "A cerimônia começará pontualmente às 18:00. Sua presença desde o início é muito importante.",
         icon: "clock",
     },
     {
-        id: "enjoy",
-        title: "Aproveite a festa",
-        description: "Coma, beba, dance e se divirta! Esse dia foi preparado com muito carinho para todos nós.",
-        icon: "sparkle",
+        id: "dresscode",
+        title: "O que vestir",
+        description: "Traje Esporte Fino. Pedimos gentilmente que evitem as cores Branco, Fúcsia e Rosa Pink.",
+        icon: "shirt",
+    },
+    {
+        id: "parking",
+        title: "Estacionamento",
+        description: "Haverá estacionamento gratuito e seguro no local para todos os convidados.",
+        icon: "car",
+    },
+    {
+        id: "photos",
+        title: "Muitas fotos",
+        description: "Amamos fotos! Registre cada momento e compartilhe conosco usando nossa hashtag.",
+        icon: "camera",
+    },
+    {
+        id: "gifts",
+        title: "Presentes",
+        description: "Sua presença é o principal! Para mimos, temos uma lista virtual aqui no site.",
+        icon: "gift",
+    },
+    {
+        id: "confirmation",
+        title: "Confirmação",
+        description: "Por favor, confirme sua presença até o dia 13/02 para organizarmos tudo com carinho.",
+        icon: "check",
     },
 ] as const;
+
+// ============================================================================
+// PAYMENT CONFIGURATION
+// ============================================================================
+
+// Mercado Pago Fee Rate (4.99% for credit card only - PIX has no fee)
+export const MERCADO_PAGO_FEE_RATE = 0.0499;
+
+// Calculate adjusted price to pass MP fee to buyer
+export const calculateMPAdjustedPrice = (originalPrice: number): number => {
+    const adjustedPrice = originalPrice / (1 - MERCADO_PAGO_FEE_RATE);
+    return Math.round(adjustedPrice * 100) / 100;
+};
+
+// Phone validation regex
+export const PHONE_REGEX = /^\(?[1-9]{2}\)?\s?(?:9\d{4}|\d{4})[-\s]?\d{4}$/;
+
+// Sanitization helper
+export const sanitizeInput = (input: string): string => {
+    return input
+        .replace(/[<>]/g, '') // Remove potential HTML tags
+        .trim();
+};
+
