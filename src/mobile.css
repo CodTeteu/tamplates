@@ -28,14 +28,7 @@
     }
 
     /* HERO SECTION FIX */
-    /* HERO SECTION FIX */
-    #inicio {
-        padding-top: 0 !important;
-        margin-top: 0 !important;
-        top: 0 !important;
-        min-height: 100vh !important;
-        height: 100vh !important;
-    }
+
 
     /* Even more compact for specific sections */
     .py-24,
