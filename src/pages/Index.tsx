@@ -51,8 +51,8 @@ const Index = () => {
         <link rel="canonical" href="/" />
       </Helmet>
 
+      <Navigation />
       <main className="overflow-hidden">
-        <Navigation />
         <HeroSection />
         <OurStorySection />
         <GallerySection />
