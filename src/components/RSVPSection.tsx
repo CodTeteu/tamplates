@@ -48,18 +48,17 @@ const buildWhatsAppMessage = (data: ExtendedRSVPFormData): string => {
   let message = "";
 
   if (isAttending) {
-    message = `Olá! Que alegria! Gostaria de confirmar minha presença no casamento de *${COUPLE.displayName}*! ❤️%0A%0A` +
-      `*Nome:* ${data.name}%0A` +
-      `*Telefone:* ${data.phone}%0A` +
-      `*Estarei lá:* Sim! 😍%0A` +
-      `*Total de pessoas:* ${data.guests}`;
+    message = `Olá! Acabei de confirmar minha presença no site! 💍%0A%0A` +
+      `*Nome:* ${data.name}`;
 
     if (data.companions.length > 0) {
       const validCompanions = data.companions.filter(c => c.trim() !== "");
       if (validCompanions.length > 0) {
-        message += `%0A%0A*Acompanhantes:* ✨%0A${validCompanions.map(c => `• ${c}`).join("%0A")}`;
+        message += `%0A*Acompanhantes:*%0A${validCompanions.map(c => `- ${c}`).join("%0A")}`;
       }
     }
+
+    message += `%0A%0AMal posso esperar para celebrar com vocês! ✨`;
   } else {
     message = `Olá! Agradeço muito o convite para o casamento de *${COUPLE.displayName}*. ❤️%0A%0A` +
       `*Nome:* ${data.name}%0A` +
@@ -160,65 +159,64 @@ const RSVPSection = () => {
 
     setIsSubmitting(true);
 
-    try {
-      // 1. Prepare data for Database
-      let rsvpData: any = {
-        fullName: formData.name,
-        phone: formData.phone,
-        message: formData.message,
-        songRequest: "",
+    // 1. Prepare data for Database
+    let rsvpData: any = {
+      fullName: formData.name,
+      phone: formData.phone,
+      message: formData.message || '',
+      songRequest: '',
+    };
+
+    if (formData.attending === "yes") {
+      const companionsList = formData.companions
+        .filter(c => c.trim() !== "")
+        .map(name => ({ name, isChild: false }));
+
+      rsvpData = {
+        ...rsvpData,
+        isAttending: true,
+        totalGuests: parseInt(formData.guests),
+        companions: companionsList.length > 0 ? companionsList : null,
+        paymentMethod: 'none',
+        totalCost: 0,
+        status: 'confirmed'
       };
-
-      if (formData.attending === "yes") {
-        const companionsList = formData.companions
-          .filter(c => c.trim() !== "")
-          .map(name => ({ name, isChild: false }));
-
-        rsvpData = {
-          ...rsvpData,
-          isAttending: true,
-          totalGuests: parseInt(formData.guests),
-          companions: companionsList,
-          paymentMethod: 'none',
-          totalCost: 0,
-          status: 'confirmed'
-        };
-      } else {
-        rsvpData = {
-          ...rsvpData,
-          isAttending: false,
-          totalGuests: 0,
-          companions: [],
-          paymentMethod: 'none',
-          totalCost: 0,
-          status: 'declined'
-        };
-      }
-
-      // 2. Save to Database IMMEDIATELY
-      await RsvpService.create(rsvpData);
-
-      toast({
-        title: "Sucesso!",
-        description: "Seus dados foram salvos. Redirecionando para o WhatsApp...",
-      });
-
-    } catch (error) {
-      console.error("Erro ao salvar no banco de dados:", error);
-      toast({
-        title: "Aviso",
-        description: "Houve um erro ao salvar no sistema, mas prossiga para o WhatsApp.",
-        variant: "destructive"
-      });
+    } else {
+      rsvpData = {
+        ...rsvpData,
+        isAttending: false,
+        totalGuests: 0,
+        companions: null,
+        paymentMethod: 'none',
+        totalCost: 0,
+        status: 'declined'
+      };
     }
 
-    // 3. Redirect to WhatsApp (Always happens, even if DB fails, as per fallback logic)
-    // Small delay to ensure user sees the success toast if DB worked
+    // 2. Try to save to database
+    let dbSaveSuccess = false;
+    try {
+      console.log("Attempting to save RSVP:", rsvpData);
+      await RsvpService.create(rsvpData);
+      console.log("RSVP saved successfully!");
+      dbSaveSuccess = true;
+    } catch (error: any) {
+      console.error("Database save error:", error?.message || error);
+      // Don't block the user - continue to WhatsApp
+    }
+
+    // 3. Show appropriate message and redirect
+    toast({
+      title: dbSaveSuccess ? "Confirmação salva!" : "Quase lá!",
+      description: "Redirecionando para o WhatsApp...",
+    });
+
     setTimeout(() => {
       const message = buildWhatsAppMessage(formData);
-      window.open(CONTACT.whatsappUrl(message), "_blank");
+      const whatsappUrl = CONTACT.whatsappUrl(message);
+      window.location.href = whatsappUrl;
       setIsSubmitting(false);
-    }, 1000);
+    }, 800);
   };
 
   return (

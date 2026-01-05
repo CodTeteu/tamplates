@@ -51,7 +51,8 @@ export const GiftService = {
             imageUrl = await this.uploadImage(imageFile);
         }
 
-        const { data, error } = await supabase
+        // Don't use .select() - RLS blocks SELECT for anonymous users
+        const { error } = await supabase
             .from('gifts')
             .insert({
                 name: gift.name,
@@ -60,12 +61,10 @@ export const GiftService = {
                 image_url: imageUrl,
                 category: gift.category,
                 featured: gift.featured || false
-            })
-            .select('id')
-            .single();
+            });
 
         if (error) throw error;
-        return data.id;
+        return 'gift-' + Date.now();
     },
 
     async updateGift(id: string, updates: Partial<Gift>, imageFile?: File): Promise<void> {
@@ -196,7 +195,8 @@ export const GiftService = {
 
         const status = data.paymentMethod === 'pix' ? 'pending_confirmation' : 'pending';
 
-        const { data: result, error } = await supabase
+        // Don't use .select() - RLS blocks SELECT for anonymous users
+        const { error } = await supabase
             .from('gift_payments')
             .insert({
                 buyer_name: data.buyerName,
@@ -206,12 +206,10 @@ export const GiftService = {
                 total_amount: data.totalAmount,
                 payment_method: data.paymentMethod,
                 status: status
-            })
-            .select('id')
-            .single();
+            });
 
         if (error) throw error;
-        return result.id;
+        return 'payment-' + Date.now();
     },
 
     async updatePaymentStatus(id: string, status: string): Promise<void> {
@@ -248,5 +246,43 @@ export const GiftService = {
             .insert(giftRows);
 
         if (error) throw error;
+    },
+
+    async deduplicateGifts(): Promise<number> {
+        if (!isSupabaseConfigured || !supabase) {
+            console.warn('Supabase not configured. Cannot deduplicate gifts.');
+            return 0;
+        }
+
+        const { data: allGifts, error } = await supabase
+            .from('gifts')
+            .select('id, name, created_at')
+            .order('created_at', { ascending: true }); // Keep the oldest/original
+
+        if (error) throw error;
+        if (!allGifts) return 0;
+
+        const seenNames = new Set<string>();
+        const idsToDelete: string[] = [];
+
+        for (const gift of allGifts) {
+            const normalizedName = gift.name.trim().toLowerCase();
+            if (seenNames.has(normalizedName)) {
+                idsToDelete.push(gift.id);
+            } else {
+                seenNames.add(normalizedName);
+            }
+        }
+
+        if (idsToDelete.length > 0) {
+            const { error: deleteError } = await supabase
+                .from('gifts')
+                .delete()
+                .in('id', idsToDelete);
+
+            if (deleteError) throw deleteError;
+        }
+
+        return idsToDelete.length;
     }
 };

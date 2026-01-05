@@ -143,7 +143,6 @@ export interface RegistrationRecord extends RsvpFormData {
     totalCost: number;
     receiptUrl?: string;
     status?: string;  // 'pending_payment', 'paid', etc.
-    email?: string;
 }
 
 // ============================================================================

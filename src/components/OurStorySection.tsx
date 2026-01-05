@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import coupleImage from "@/assets/couple-3.jpg";
@@ -14,6 +14,15 @@ const OurStorySection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
+  // Parallax for decorative elements
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+
+  const decorY1 = useTransform(scrollYProgress, [0, 1], ["-20%", "20%"]);
+  const decorY2 = useTransform(scrollYProgress, [0, 1], ["20%", "-20%"]);
+
   return (
     <section
       id="nossa-historia"
@@ -22,9 +31,15 @@ const OurStorySection = () => {
     >
       <BackgroundPattern opacity={30} />
 
-      {/* Decorative elements */}
-      <div className="absolute top-20 right-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 left-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
+      {/* Decorative elements with parallax */}
+      <motion.div
+        className="absolute top-20 right-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl"
+        style={{ y: decorY1 }}
+      />
+      <motion.div
+        className="absolute bottom-20 left-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"
+        style={{ y: decorY2 }}
+      />
 
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         <AnimatedSectionHeader

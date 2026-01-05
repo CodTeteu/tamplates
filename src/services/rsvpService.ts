@@ -21,7 +21,6 @@ export const RsvpService = {
                 date: item.created_at,
                 fullName: item.full_name,
                 phone: item.phone,
-                email: item.email,
                 isAttending: item.is_attending,
                 totalGuests: item.total_guests,
                 companionsCount: item.companions?.length || 0,
@@ -59,25 +58,32 @@ export const RsvpService = {
             return 'offline-' + Date.now();
         }
 
-        const { data: result, error } = await supabase
-            .from('rsvp_responses')
-            .insert({
-                full_name: data.fullName,
-                phone: data.phone,
-                email: data.email,
-                is_attending: data.isAttending,
-                total_guests: data.totalGuests,
-                companions: data.companions,
-                payment_method: data.paymentMethod,
-                total_cost: data.totalCost,
-                song_request: data.songRequest,
-                message: data.message,
-                status: data.status || 'confirmed'
-            })
-            .select('id')
-            .single();
+        const insertData = {
+            full_name: data.fullName,
+            phone: data.phone,
+            is_attending: data.isAttending,
+            total_guests: data.totalGuests,
+            companions: data.companions,
+            payment_method: data.paymentMethod,
+            total_cost: data.totalCost,
+            song_request: data.songRequest,
+            message: data.message,
+            status: data.status || 'confirmed'
+        };
 
-        if (error) throw error;
-        return result.id;
+        console.log('Inserting RSVP data:', insertData);
+
+        // Don't use .select() - RLS blocks SELECT for anonymous users
+        const { error } = await supabase
+            .from('rsvp_responses')
+            .insert(insertData);
+
+        if (error) {
+            console.error('Supabase insert error:', error);
+            throw new Error(error.message);
+        }
+
+        console.log('RSVP saved successfully!');
+        return 'saved-' + Date.now();
     }
 };

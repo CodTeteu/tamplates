@@ -448,7 +448,8 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                             </div>
                         ) : (
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left text-sm text-muted-foreground">
+                                {/* Desktop Table */}
+                                <table className="w-full text-left text-sm text-muted-foreground hidden md:table">
                                     <thead className="bg-muted text-xs uppercase font-bold text-muted-foreground border-b border-border">
                                         <tr>
                                             <th className="px-6 py-4">Nome</th>
@@ -481,13 +482,15 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                                                 <td className="px-6 py-4">
                                                     <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${r.status === 'paid' ? 'bg-green-100 text-green-700' :
                                                         r.status === 'pending_payment' ? 'bg-yellow-100 text-yellow-700' :
-                                                            !r.status || r.status === '' ? 'bg-green-100 text-green-700' :
-                                                                'bg-gray-100 text-gray-700'
+                                                            r.status === 'declined' ? 'bg-red-100 text-red-700' :
+                                                                !r.status || r.status === '' || r.status === 'confirmed' ? 'bg-green-100 text-green-700' :
+                                                                    'bg-gray-100 text-gray-700'
                                                         }`}>
                                                         {r.status === 'paid' ? 'Pago' :
                                                             r.status === 'pending_payment' ? 'Aguardando PIX' :
-                                                                !r.status || r.status === '' ? 'Confirmado' :
-                                                                    r.status}
+                                                                r.status === 'declined' ? 'Não Comparecerá' :
+                                                                    r.status === 'confirmed' || !r.status || r.status === '' ? 'Confirmado' :
+                                                                        r.status}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
@@ -497,6 +500,53 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                                         ))}
                                     </tbody>
                                 </table>
+
+                                {/* Mobile Card View */}
+                                <div className="md:hidden divide-y divide-border">
+                                    {records.map(r => (
+                                        <div key={r.id} className="p-4 flex flex-col gap-3">
+                                            <div className="flex justify-between items-start">
+                                                <div>
+                                                    <div className="font-bold text-foreground">{r.fullName}</div>
+                                                    <div className="text-xs text-muted-foreground">{r.phone}</div>
+                                                </div>
+                                                <button onClick={() => handleDelete(r.id)} className="p-2 text-destructive/50 hover:text-destructive hover:bg-destructive/10 rounded-full transition-colors">
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
+
+                                            {r.companions && r.companions.length > 0 && (
+                                                <div className="bg-muted/30 p-3 rounded-lg text-xs">
+                                                    <span className="font-bold text-muted-foreground block mb-1">Acompanhantes ({r.companions.length})</span>
+                                                    <ul className="list-disc list-inside space-y-1">
+                                                        {r.companions.map((c, idx) => (
+                                                            <li key={idx} className="text-muted-foreground">
+                                                                <span className="font-medium text-foreground">{c.name}</span>
+                                                                {c.isChild && <span className="text-[10px] ml-1 opacity-70">(Criança)</span>}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+
+                                            <div className="flex items-center justify-between mt-1">
+                                                <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${r.status === 'paid' ? 'bg-green-100 text-green-700' :
+                                                        r.status === 'pending_payment' ? 'bg-yellow-100 text-yellow-700' :
+                                                            r.status === 'declined' ? 'bg-red-100 text-red-700' :
+                                                                'bg-green-100 text-green-700'
+                                                    }`}>
+                                                    {r.status === 'paid' ? 'Pago' :
+                                                        r.status === 'pending_payment' ? 'Aguardando PIX' :
+                                                            r.status === 'declined' ? 'Não Comparecerá' :
+                                                                'Confirmado'}
+                                                </span>
+                                                <div className="text-xs font-mono font-bold text-muted-foreground">
+                                                    {new Date(r.date).toLocaleDateString()}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         )}
                     </div>
@@ -514,7 +564,8 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                             </div>
                         ) : (
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left text-sm text-muted-foreground">
+                                {/* Desktop Table */}
+                                <table className="w-full text-left text-sm text-muted-foreground hidden md:table">
                                     <thead className="bg-purple-50 text-xs uppercase font-bold text-purple-900/60 border-b border-purple-100">
                                         <tr>
                                             <th className="px-6 py-4">Data</th>
@@ -588,6 +639,76 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                                         ))}
                                     </tbody>
                                 </table>
+
+                                {/* Mobile Card View */}
+                                <div className="md:hidden divide-y divide-border">
+                                    {payments.map(payment => (
+                                        <div key={payment.id} className="p-4 flex flex-col gap-4">
+                                            <div className="flex justify-between items-start">
+                                                <div>
+                                                    <div className="font-bold text-foreground text-lg">{payment.buyerName}</div>
+                                                    <div className="text-xs text-muted-foreground">{payment.buyerEmail}</div>
+                                                </div>
+                                                <div className="text-right">
+                                                    <div className="font-mono font-bold text-primary text-lg">
+                                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(payment.totalAmount)}
+                                                    </div>
+                                                    <div className="text-[10px] text-muted-foreground">{new Date(payment.date).toLocaleDateString()}</div>
+                                                </div>
+                                            </div>
+
+                                            {payment.message && (
+                                                <div className="bg-yellow-50 p-3 rounded-lg text-xs italic text-yellow-800 border border-yellow-100">
+                                                    "{payment.message}"
+                                                </div>
+                                            )}
+
+                                            <div className="bg-muted/30 p-3 rounded-lg">
+                                                <p className="text-[10px] font-bold uppercase text-muted-foreground mb-2">Itens Comprados</p>
+                                                <ul className="space-y-2">
+                                                    {payment.items.map((item, idx) => (
+                                                        <li key={idx} className="flex items-center gap-2 text-sm text-foreground">
+                                                            <GiftIcon className="w-3 h-3 text-purple-400" />
+                                                            {item.name}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+
+                                            <div className="flex justify-between items-center pt-2 border-t border-border/50">
+                                                <select
+                                                    value={payment.status}
+                                                    onChange={(e) => handleUpdatePaymentStatus(payment.id, e.target.value)}
+                                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase border-none outline-none cursor-pointer ${payment.status === 'approved' ? 'bg-green-100 text-green-700' :
+                                                            payment.status === 'pending' || payment.status === 'pending_confirmation' ? 'bg-yellow-100 text-yellow-700' :
+                                                                'bg-red-100 text-red-700'
+                                                        }`}
+                                                >
+                                                    <option value="pending_confirmation">Aguardando PIX</option>
+                                                    <option value="approved">Recebido</option>
+                                                    <option value="cancelled">Cancelado</option>
+                                                </select>
+
+                                                <button
+                                                    onClick={async () => {
+                                                        if (confirm('Tem certeza que deseja excluir este registro de presente?')) {
+                                                            try {
+                                                                await GiftService.deletePayment(payment.id);
+                                                                setPayments(prev => prev.filter(p => p.id !== payment.id));
+                                                            } catch (e) {
+                                                                console.error('Error deleting payment:', e);
+                                                                alert('Erro ao excluir registro.');
+                                                            }
+                                                        }
+                                                    }}
+                                                    className="p-2 text-destructive/50 hover:text-destructive bg-destructive/5 hover:bg-destructive/10 rounded-full transition-colors"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         )}
                     </div>
@@ -606,6 +727,28 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                                 </p>
                             </div>
                             <div className="flex gap-2 flex-wrap">
+                                <button
+                                    onClick={async () => {
+                                        if (confirm('Isso irá remover todos os presentes com nomes duplicados, mantendo apenas o mais antigo. Continuar?')) {
+                                            setLoading(true);
+                                            try {
+                                                const removed = await GiftService.deduplicateGifts();
+                                                alert(`${removed} presentes duplicados removidos.`);
+                                                fetchGifts();
+                                            } catch (e) {
+                                                console.error(e);
+                                                alert("Erro ao remover duplicatas.");
+                                            } finally {
+                                                setLoading(false);
+                                            }
+                                        }
+                                    }}
+                                    disabled={loading}
+                                    className="bg-amber-50 text-amber-600 border border-amber-200 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-amber-100 transition-colors flex items-center gap-2 disabled:opacity-50"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                    Remover Duplicados
+                                </button>
                                 <button
                                     onClick={handleSeedGifts}
                                     disabled={loading}

@@ -159,13 +159,13 @@ export const GUEST_MANUAL = [
     {
         id: "dresscode",
         title: "O que vestir",
-        description: "Traje Esporte Fino. Sinta-se à vontade para vestir o que lhe fizer sentir bem.",
+        description: "Vista-se confortável! Apenas evite branco (cor da noiva) e verde oliva (cor das madrinhas).",
         icon: "shirt",
     },
     {
         id: "parking",
         title: "Estacionamento",
-        description: "Haverá estacionamento gratuito e seguro no local (dentro do shopping) para todos os convidados.",
+        description: "Estacionamento pago no Pontal Shopping. Carros: R$ 17 por 2h + R$ 3/hora adicional. Motos: R$ 9 por 2h + R$ 2/hora adicional.",
         icon: "car",
     },
     {

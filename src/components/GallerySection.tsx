@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useEffect, useState, useCallback } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -77,14 +78,33 @@ const GallerySection = () => {
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.3 }}
+          className="relative"
         >
+          {/* Previous Arrow */}
+          <button
+            onClick={() => api?.scrollPrev()}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-background/90 backdrop-blur-sm text-foreground p-3 rounded-full shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 -ml-2 md:ml-2"
+            aria-label="Foto anterior"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+
+          {/* Next Arrow */}
+          <button
+            onClick={() => api?.scrollNext()}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-background/90 backdrop-blur-sm text-foreground p-3 rounded-full shadow-lg hover:bg-primary hover:text-primary-foreground transition-all duration-300 -mr-2 md:mr-2"
+            aria-label="Próxima foto"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+
           <Carousel
             setApi={setApi}
             opts={{
               align: "start",
               loop: true,
             }}
-            className="w-full"
+            className="w-full px-8 md:px-12"
           >
             <CarouselContent className="-ml-2 md:-ml-4">
               {images.map((image, index) => (

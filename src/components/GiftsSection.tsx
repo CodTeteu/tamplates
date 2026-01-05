@@ -21,14 +21,38 @@ const GiftsSection = () => {
   const [copied, setCopied] = useState(false);
   const [showPixModal, setShowPixModal] = useState(false);
 
-  const handleCopyPix = () => {
-    navigator.clipboard.writeText(PIX.key);
-    setCopied(true);
-    toast({
-      title: "Chave Pix copiada!",
-      description: "A chave foi copiada para sua área de transferência.",
-    });
-    setTimeout(() => setCopied(false), COPY_TIMEOUT);
+  const handleCopyPix = async () => {
+    try {
+      // Modern Clipboard API (may not work in some in-app browsers)
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(PIX.key);
+      } else {
+        // Fallback for older browsers or in-app browsers (Instagram, Facebook, etc.)
+        const textArea = document.createElement('textarea');
+        textArea.value = PIX.key;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        textArea.style.top = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+      setCopied(true);
+      toast({
+        title: "Chave Pix copiada!",
+        description: "A chave foi copiada para sua área de transferência.",
+      });
+      setTimeout(() => setCopied(false), COPY_TIMEOUT);
+    } catch (err) {
+      // If copy fails, show the key in an alert so user can copy manually
+      toast({
+        title: "Copie manualmente",
+        description: `Chave PIX: ${PIX.key}`,
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -49,7 +73,7 @@ const GiftsSection = () => {
             <span className="text-primary uppercase tracking-[0.3em] text-xs font-bold bg-card/70 px-4 py-1 rounded-full backdrop-blur-sm shadow-sm inline-block mb-6">Lista de Presentes</span>
             <h2 className="text-4xl md:text-6xl font-script text-foreground mb-6">Lista de Presentes</h2>
             <p className="text-muted-foreground leading-relaxed font-body text-lg mb-8">
-              Sua presença é o nosso maior presente. Preparamos uma lista virtual apenas para quem desejar nos abençoar com algum presente, ficaremos gratos por qualquer lembrança. Lembrando que sua presença é o que realmente importa.
+              Nossa maior alegria é ter você conosco. Para quem desejar nos presentear, esta lista foi preparada com carinho para nos acompanhar no início dessa nova etapa. O que realmente importa é a sua presença.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">

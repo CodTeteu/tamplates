@@ -34,31 +34,31 @@ const Footer = () => {
         {/* Admin Button */}
         <a
           href="/admin"
-          className="inline-flex items-center gap-2 px-6 py-2 border border-[#E5D3B3]/20 rounded transition-all text-[10px] uppercase tracking-[0.2em] text-[#E5D3B3]/70 hover:text-[#3E2F2B] hover:bg-[#E5D3B3] hover:border-[#E5D3B3] mb-6"
+          className="inline-flex items-center gap-2 px-6 py-2 border border-[#E5D3B3]/20 rounded transition-all text-[10px] uppercase tracking-[0.2em] text-[#E5D3B3]/70 hover:text-[#3E2F2B] hover:bg-[#E5D3B3] hover:border-[#E5D3B3] mb-4"
         >
           <Settings className="w-3 h-3" />
           Painel Admin
         </a>
 
         {/* Credits */}
-        <div className="flex flex-col items-center gap-2 border-t border-[#E5D3B3]/10 pt-6 w-full max-w-xs">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-[#E5D3B3]/40">
+        <div className="flex flex-col items-center gap-1 border-t border-[#E5D3B3]/10 pt-4 w-full max-w-sm">
+          <p className="text-xs uppercase tracking-[0.25em] text-[#E5D3B3]/50 font-bold mb-1">
             Site desenvolvido por
           </p>
 
           <img
             src="/images/luma-logo-v2.png"
             alt="LUMA"
-            className="h-14 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
+            className="h-20 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity mb-1"
           />
 
           <a
             href="https://instagram.com/luma.convitesdigitais"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-[#E5D3B3]/60 hover:text-[#E5D3B3] transition-colors text-xs font-body"
+            className="flex items-center gap-2 text-[#E5D3B3]/70 hover:text-[#E5D3B3] transition-colors text-sm font-bold tracking-wide"
           >
-            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
               <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
               <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>

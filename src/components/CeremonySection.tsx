@@ -1,7 +1,7 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef, useState } from "react";
-import { Clock, MapPin, ExternalLink, Calendar, Shirt, Car, Camera, Gift, CheckCircle, X, Navigation } from "lucide-react";
+import { useRef } from "react";
+import { Clock, MapPin, Calendar, Shirt, Car, Camera, Gift, CheckCircle } from "lucide-react";
 import coupleImage from "@/assets/couple-6.jpg";
 import BackgroundPattern from "@/components/ui/BackgroundPattern";
 import { AnimatedSectionHeader } from "@/components/ui/SectionHeader";
@@ -55,7 +55,6 @@ const getIcon = (iconType: string) => {
 const CeremonySection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [showGpsModal, setShowGpsModal] = useState(false);
 
   return (
     <>
@@ -103,9 +102,29 @@ const CeremonySection = () => {
                 </div>
               </div>
               <div className="p-8">
-                <p className="font-body text-muted-foreground leading-relaxed">
+                <p className="font-body text-muted-foreground leading-relaxed mb-6">
                   A cerimônia terá início às <strong className="text-primary">{WEDDING.time}</strong>. Pedimos que cheguem com antecedência para que nada deste momento especial se perca.
                 </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a
+                    href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=Casamento+Eduardo+%26+Nicole&dates=20260228T180000/20260228T230000&location=Galeto+Mamma+Mia&details=Casamento+de+Eduardo+e+Nicole`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground px-4 py-3 rounded-full font-body text-sm hover:shadow-xl hover:shadow-primary/20 transition-all duration-300"
+                  >
+                    <Calendar className="w-4 h-4" />
+                    Google Agenda
+                  </a>
+                  <a
+                    href={`https://outlook.live.com/calendar/0/action/compose?subject=Casamento+Eduardo+%26+Nicole&startdt=2026-02-28T18:00:00&enddt=2026-02-28T23:00:00&location=Galeto+Mamma+Mia&body=Casamento+de+Eduardo+e+Nicole`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 inline-flex items-center justify-center gap-2 bg-[#0078D4] text-white px-4 py-3 rounded-full font-body text-sm hover:shadow-xl hover:bg-[#106ebe] transition-all duration-300"
+                  >
+                    <Calendar className="w-4 h-4" />
+                    Outlook
+                  </a>
+                </div>
               </div>
             </motion.div>
 
@@ -141,13 +160,30 @@ const CeremonySection = () => {
                 <p className="font-body text-muted-foreground mb-6 leading-relaxed">
                   Um local aconchegante e especial para celebrar este dia único.
                 </p>
-                <button
-                  onClick={() => setShowGpsModal(true)}
-                  className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground px-6 py-3 rounded-full font-body text-sm hover:shadow-xl hover:shadow-primary/20 transition-all duration-300"
-                >
-                  <Navigation className="w-4 h-4" />
-                  Abrir no GPS
-                </button>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a
+                    href={VENUE.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground px-4 py-3 rounded-full font-body text-sm hover:shadow-xl hover:shadow-primary/20 transition-all duration-300"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                    </svg>
+                    Google Maps
+                  </a>
+                  <a
+                    href={VENUE.wazeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 inline-flex items-center justify-center gap-2 bg-[#33CCFF] text-white px-4 py-3 rounded-full font-body text-sm hover:shadow-xl hover:bg-[#2bb8e8] transition-all duration-300"
+                  >
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.54 6.63c-.36-2.22-1.89-4-4.07-4.58C14.34 1.55 12.19 2 10.41 3.1 6.24 5.63 4.62 10.6 6.07 15.21c.24.76.56 1.48.94 2.15-.28.69-.78 1.66-1.65 2.61-.27.3-.08.78.33.81 1.49.1 3.62-.5 5.38-1.76.41.08.83.15 1.26.19 4.76.46 9.02-2.69 9.72-7.41.2-1.4.04-2.81-.51-4.17zM9.5 11c-.83 0-1.5-.67-1.5-1.5S8.67 8 9.5 8s1.5.67 1.5 1.5S10.33 11 9.5 11zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 8 14.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+                    </svg>
+                    Waze
+                  </a>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -175,70 +211,6 @@ const CeremonySection = () => {
           </div>
         </div>
       </section>
-
-      {/* GPS Navigation Modal */}
-      <AnimatePresence>
-        {showGpsModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-foreground/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setShowGpsModal(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-background rounded-3xl shadow-2xl max-w-sm w-full p-8 relative"
-            >
-              <button
-                onClick={() => setShowGpsModal(false)}
-                className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MapPin className="w-8 h-8 text-primary" />
-                </div>
-                <h3 className="font-heading text-2xl text-foreground mb-2">Escolha o App</h3>
-                <p className="font-body text-sm text-muted-foreground">
-                  Como deseja navegar até {VENUE.name}?
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-3">
-                <a
-                  href={VENUE.mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-3 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground px-6 py-4 rounded-2xl font-body text-base hover:shadow-xl hover:shadow-primary/20 transition-all duration-300"
-                >
-                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                  </svg>
-                  Google Maps
-                </a>
-
-                <a
-                  href={VENUE.wazeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-3 bg-[#33CCFF] text-white px-6 py-4 rounded-2xl font-body text-base hover:shadow-xl hover:bg-[#2bb8e8] transition-all duration-300"
-                >
-                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.54 6.63c-.36-2.22-1.89-4-4.07-4.58C14.34 1.55 12.19 2 10.41 3.1 6.24 5.63 4.62 10.6 6.07 15.21c.24.76.56 1.48.94 2.15-.28.69-.78 1.66-1.65 2.61-.27.3-.08.78.33.81 1.49.1 3.62-.5 5.38-1.76.41.08.83.15 1.26.19 4.76.46 9.02-2.69 9.72-7.41.2-1.4.04-2.81-.51-4.17zM9.5 11c-.83 0-1.5-.67-1.5-1.5S8.67 8 9.5 8s1.5.67 1.5 1.5S10.33 11 9.5 11zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 8 14.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
-                  </svg>
-                  Waze
-                </a>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 };

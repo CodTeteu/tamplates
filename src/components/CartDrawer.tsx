@@ -28,9 +28,26 @@ export const CartDrawer: React.FC = () => {
     };
 
     const handleCopyPix = async () => {
-        navigator.clipboard.writeText(PIX_KEY);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(PIX_KEY);
+            } else {
+                // Fallback for in-app browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = PIX_KEY;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-9999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+            }
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch {
+            // Silent fail - user can still see the key on screen
+        }
     };
 
     const handleCheckout = () => {

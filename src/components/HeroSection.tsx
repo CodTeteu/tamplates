@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Calendar, MapPin, ChevronDown } from "lucide-react";
+import { useRef } from "react";
 import coupleImage from "@/assets/couple-7.jpg";
 import useCountdown from "@/hooks/useCountdown";
 import { WEDDING, VENUE, COUPLE } from "@/constants";
@@ -7,10 +8,24 @@ import { WEDDING, VENUE, COUPLE } from "@/constants";
 /**
  * Hero Section Component
  * Refactored to match "Reference Project" layout for mobile stability.
- * Uses h-screen and CSS background instead of JS parallax.
+ * Uses parallax scroll effect for immersive experience.
  */
 const HeroSection = () => {
   const timeLeft = useCountdown(WEDDING.date);
+  const ref = useRef(null);
+
+  // Parallax scroll effect
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"]
+  });
+
+  // Background moves slower (parallax factor 0.5 = 50% speed)
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  // Content fades out as you scroll
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  // Scale effect on background
+  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
   const scrollToConfirmation = () => {
     document.getElementById("confirmacao")?.scrollIntoView({ behavior: "smooth" });
@@ -24,19 +39,24 @@ const HeroSection = () => {
   ];
 
   return (
-    <section id="inicio" className="relative h-screen min-h-[600px] flex items-center justify-center text-center overflow-hidden">
-      {/* Background Image - Fixed on Desktop, Scroll on Mobile for performance/compatibility */}
-      <div
+    <section id="inicio" ref={ref} className="relative h-screen min-h-[600px] flex items-center justify-center text-center overflow-hidden">
+      {/* Background Image with Parallax Effect */}
+      <motion.div
         className="absolute inset-0 z-0 bg-cover bg-[center_top] md:bg-[center_45%]"
         style={{
-          backgroundImage: `url(${coupleImage})`
+          backgroundImage: `url(${coupleImage})`,
+          y: backgroundY,
+          scale: backgroundScale,
         }}
       >
         <div className="absolute inset-0 bg-black/30 mix-blend-multiply"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80"></div>
-      </div>
+      </motion.div>
 
-      <div className="relative z-10 px-4 w-full max-w-5xl mx-auto flex flex-col items-center justify-between h-full pt-20 pb-12 md:py-20">
+      <motion.div
+        className="relative z-10 px-4 w-full max-w-5xl mx-auto flex flex-col items-center justify-between h-full pt-20 pb-12 md:py-20"
+        style={{ opacity: contentOpacity }}
+      >
 
         {/* --- TOP SECTION --- */}
         <div className="flex flex-col items-center mt-4 md:mt-0 w-full">
@@ -107,7 +127,7 @@ const HeroSection = () => {
             <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
           </motion.button>
         </div>
-      </div>
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0 }}

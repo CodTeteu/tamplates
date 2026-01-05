@@ -21,56 +21,17 @@ export const GiftListPage: React.FC = () => {
     // Fixed categories for filter
     const categories = ['Todas', 'Cozinha', 'Eletro', 'Banheiro', 'Utensílios', 'Lua de Mel', 'Sala', 'Quarto', 'Lavanderia'];
 
-    // Cache configuration
-    const CACHE_KEY = 'wedding_gifts_cache';
-    const CACHE_TTL = 60 * 60 * 1000; // 1 hour in ms
 
-    const getCachedGifts = (): GiftType[] | null => {
-        try {
-            const cached = localStorage.getItem(CACHE_KEY);
-            if (cached) {
-                const { data, timestamp } = JSON.parse(cached);
-                if (Date.now() - timestamp < CACHE_TTL) {
-                    return data;
-                }
-            }
-        } catch (e) {
-            console.error('Error reading cache:', e);
-        }
-        return null;
-    };
-
-    const setCachedGifts = (gifts: GiftType[]) => {
-        try {
-            localStorage.setItem(CACHE_KEY, JSON.stringify({
-                data: gifts,
-                timestamp: Date.now()
-            }));
-        } catch (e) {
-            console.error('Error setting cache:', e);
-        }
-    };
 
     useEffect(() => {
         let isMounted = true;
         const loadGifts = async () => {
-            // Try loading from cache first (saves Firestore reads)
-            const cachedGifts = getCachedGifts();
-            if (cachedGifts && cachedGifts.length > 0) {
-                if (isMounted) {
-                    setGifts(cachedGifts);
-                    setLoading(false);
-                }
-                return;
-            }
-
-            // If no valid cache, fetch from Firestore
+            setLoading(true);
             try {
                 const fetchedGifts = await GiftService.getAllGifts();
                 if (isMounted) {
                     if (fetchedGifts.length > 0) {
                         setGifts(fetchedGifts);
-                        setCachedGifts(fetchedGifts);
                     } else {
                         // Fallback: if nothing in database, use local constant
                         setGifts(INITIAL_GIFTS);
