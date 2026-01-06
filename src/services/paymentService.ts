@@ -20,8 +20,8 @@ export interface CreatePreferenceData {
     successUrl?: string;
 }
 
-// Cloud Function URL - update this when setting up your own backend
-const API_URL = import.meta.env.VITE_PAYMENT_API_URL || 'https://us-central1-casamento-c031e.cloudfunctions.net/createPaymentPreference';
+// Vercel Serverless Function URL for payment processing
+const API_URL = import.meta.env.VITE_PAYMENT_API_URL || '/api/create-preference';
 
 export const PaymentService = {
     /**

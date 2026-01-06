@@ -30,23 +30,28 @@ export default async function handler(req, res) {
 
         const body = req.body;
 
+        // Sanitize phone number (remove formatting)
+        const cleanPhone = (body.buyerPhone || '').replace(/\D/g, '');
+        const areaCode = cleanPhone.substring(0, 2) || '11';
+        const phoneNumber = cleanPhone.substring(2) || '999999999';
+
         // Construct the preference payload
         const preferenceData = {
             items: body.items.map(item => ({
-                id: item.id,
-                title: item.name,
-                description: item.description,
-                picture_url: item.imageUrl,
+                id: item.id || 'gift',
+                title: item.name || 'Presente',
+                description: item.description || 'Presente de casamento',
+                picture_url: item.imageUrl || '',
                 quantity: Number(item.quantity) || 1,
-                unit_price: Number(item.price),
+                unit_price: Number(item.price) || 1,
                 currency_id: 'BRL'
             })),
             payer: {
-                name: body.buyerName,
-                email: body.buyerEmail,
+                name: body.buyerName || 'Convidado',
+                email: body.buyerEmail || `${cleanPhone}@casamento.com`,
                 phone: {
-                    area_code: body.buyerPhone.substring(0, 2),
-                    number: body.buyerPhone.substring(2)
+                    area_code: areaCode,
+                    number: phoneNumber
                 }
             },
             back_urls: {
@@ -54,9 +59,19 @@ export default async function handler(req, res) {
                 failure: 'https://eduardo-nicole.vercel.app',
                 pending: 'https://eduardo-nicole.vercel.app'
             },
-            auto_return: 'approved'
+            auto_return: 'approved',
+            // Apenas cartão de crédito - exclui PIX, boleto, débito e transferência
+            payment_methods: {
+                excluded_payment_types: [
+                    { id: 'bank_transfer' },  // Exclui PIX e transferência
+                    { id: 'ticket' },          // Exclui boleto
+                    { id: 'atm' },             // Exclui caixa eletrônico
+                    { id: 'debit_card' }       // Exclui débito
+                ]
+            }
         };
 
+        console.log('Creating preference:', JSON.stringify(preferenceData, null, 2));
         const response = await preference.create({ body: preferenceData });
 
         return res.status(200).json({
@@ -67,8 +82,10 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error('Mercado Pago Error:', error);
+        const errorMessage = error.message || error.cause?.message || 'Erro desconhecido';
+        const errorDetails = error.cause ? JSON.stringify(error.cause) : '';
         return res.status(500).json({
-            error: error.message || 'Erro interno ao criar preferência de pagamento'
+            error: `${errorMessage} ${errorDetails}`.trim()
         });
     }
 }

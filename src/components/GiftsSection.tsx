@@ -3,10 +3,9 @@ import { useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Gift, Copy, Check, X, Heart } from "lucide-react";
-import giftsImage from "@/assets/gifts.jpg";
 import { toast } from "@/hooks/use-toast";
 import BackgroundPattern from "@/components/ui/BackgroundPattern";
-import { PIX } from "@/constants";
+import { PIX, ASSETS } from "@/constants";
 
 const COPY_TIMEOUT = 3000;
 
@@ -112,7 +111,7 @@ const GiftsSection = () => {
           >
             <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-all duration-700 border-4 border-card">
               <img
-                src={giftsImage}
+                src={ASSETS.backgrounds.gifts}
                 alt="Presentes de Casamento"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
               />

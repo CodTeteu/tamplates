@@ -1,9 +1,8 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Calendar, MapPin, ChevronDown } from "lucide-react";
 import { useRef } from "react";
-import coupleImage from "@/assets/couple-7.jpg";
 import useCountdown from "@/hooks/useCountdown";
-import { WEDDING, VENUE, COUPLE } from "@/constants";
+import { WEDDING, VENUE, COUPLE, ASSETS } from "@/constants";
 
 /**
  * Hero Section Component
@@ -44,7 +43,7 @@ const HeroSection = () => {
       <motion.div
         className="absolute inset-0 z-0 bg-cover bg-[center_top] md:bg-[center_45%]"
         style={{
-          backgroundImage: `url(${coupleImage})`,
+          backgroundImage: `url(${ASSETS.backgrounds.hero})`,
           y: backgroundY,
           scale: backgroundScale,
         }}

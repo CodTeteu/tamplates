@@ -4,7 +4,7 @@ import { useRef } from "react";
 
 import BackgroundPattern from "@/components/ui/BackgroundPattern";
 import { AnimatedSectionHeader } from "@/components/ui/SectionHeader";
-import { SECTION_TITLES, MENU, VENUE } from "@/constants";
+import { SECTION_TITLES, MENU, VENUE, ASSETS } from "@/constants";
 
 /**
  * Menu Section Component
@@ -55,7 +55,7 @@ const MenuSection = () => {
           >
             <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-xl border-4 border-white/50 group">
               <motion.img
-                src="/galeto-mamma-mia.jpg"
+                src={ASSETS.venue.buffet}
                 alt="Buffet Mamma Mia"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 style={{ y: imageY }}

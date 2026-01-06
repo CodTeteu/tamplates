@@ -1,10 +1,9 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import coupleImage from "@/assets/couple-3.jpg";
 import BackgroundPattern from "@/components/ui/BackgroundPattern";
 import { AnimatedSectionHeader } from "@/components/ui/SectionHeader";
-import { COUPLE, SECTION_TITLES, BIBLE_VERSE } from "@/constants";
+import { COUPLE, SECTION_TITLES, BIBLE_VERSE, ASSETS } from "@/constants";
 
 /**
  * Our Story Section Component
@@ -58,7 +57,7 @@ const OurStorySection = () => {
           >
             <div className="aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl">
               <img
-                src={coupleImage}
+                src={ASSETS.backgrounds.story}
                 alt={COUPLE.displayName}
                 className="w-full h-full object-cover"
               />
@@ -81,11 +80,11 @@ const OurStorySection = () => {
             </h3>
 
             <p className="font-body text-muted-foreground leading-loose mb-6 text-lg">
-              Nos encontramos no tempo certo e, quando demos o primeiro passo, entendemos que Deus já estava escrevendo nossa história. Do pedido de namoro ao pedido de casamento, tudo aconteceu com propósito e confirmação.
+              {COUPLE.story.paragraph1}
             </p>
 
             <p className="font-body text-muted-foreground leading-loose mb-10 text-lg">
-              Jesus tem sido o nosso alicerce, abrindo portas e guiando cada decisão. É com alegria e gratidão que convidamos você para celebrar conosco esse grande dia, onde uniremos nossas vidas diante de Deus.
+              {COUPLE.story.paragraph2}
             </p>
 
             <div className="relative pl-8 py-4 border-l-2 border-primary/30">

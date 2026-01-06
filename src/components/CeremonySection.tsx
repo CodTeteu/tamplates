@@ -2,10 +2,9 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { Clock, MapPin, Calendar, Shirt, Car, Camera, Gift, CheckCircle } from "lucide-react";
-import coupleImage from "@/assets/couple-6.jpg";
 import BackgroundPattern from "@/components/ui/BackgroundPattern";
 import { AnimatedSectionHeader } from "@/components/ui/SectionHeader";
-import { SECTION_TITLES, WEDDING, VENUE, GUEST_MANUAL } from "@/constants";
+import { SECTION_TITLES, WEDDING, VENUE, GUEST_MANUAL, ASSETS } from "@/constants";
 
 /**
  * Camera Icon Component
@@ -88,7 +87,7 @@ const CeremonySection = () => {
             >
               <div className="aspect-[16/10] relative">
                 <img
-                  src={coupleImage}
+                  src={ASSETS.backgrounds.ceremony}
                   alt="Cerimônia"
                   className="w-full h-full object-cover"
                 />
@@ -96,9 +95,9 @@ const CeremonySection = () => {
                 <div className="absolute bottom-6 left-6 right-6 text-background">
                   <div className="flex items-center gap-2 mb-2">
                     <Clock className="w-5 h-5 opacity-80" />
-                    <span className="font-heading text-sm tracking-widest uppercase opacity-80">Horário</span>
+                    <span className="font-heading text-sm tracking-widest uppercase opacity-80">Data & Horário</span>
                   </div>
-                  <p className="font-script text-4xl">{WEDDING.time}</p>
+                  <p className="font-script text-4xl">28/02 às {WEDDING.time}</p>
                 </div>
               </div>
               <div className="p-8">
@@ -136,16 +135,10 @@ const CeremonySection = () => {
               className="bg-background rounded-3xl shadow-xl overflow-hidden border border-border/30"
             >
               <div className="aspect-[16/10] relative bg-accent/10">
-                <iframe
-                  src={VENUE.mapsEmbed}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="absolute inset-0"
-                  title="Localização do evento"
+                <img
+                  src={ASSETS.venue.location}
+                  alt="Pontal Shopping"
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/40 to-transparent pointer-events-none" />
                 <div className="absolute bottom-6 left-6 right-6 text-background pointer-events-none">
@@ -158,7 +151,7 @@ const CeremonySection = () => {
               </div>
               <div className="p-8">
                 <p className="font-body text-muted-foreground mb-6 leading-relaxed">
-                  Um local aconchegante e especial para celebrar este dia único.
+                  Restaurante Galeto Mamma Mia, localizado dentro do Pontal Shopping.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <a

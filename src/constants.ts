@@ -1,195 +1,30 @@
 /**
- * Wedding Configuration Constants
- * Centralized configuration for the wedding invitation website
+ * Constants & Utilities
+ * 
+ * Este arquivo mantém compatibilidade com imports existentes e
+ * contém apenas funções utilitárias. A configuração do casamento
+ * está em src/config/wedding-config.ts
  */
 
-// ============================================================================
-// COUPLE INFORMATION
-// ============================================================================
-
-export const COUPLE = {
-    groom: "Eduardo",
-    bride: "Nicole",
-    groomFullName: "Eduardo Piccini Martins",
-    brideFullName: "Nicole",
-    displayName: "Eduardo & Nicole",
-    initials: "E & N",
-} as const;
-
-// ============================================================================
-// WEDDING EVENT DETAILS
-// ============================================================================
-
-export const WEDDING = {
-    date: new Date("2026-02-28T18:00:00"),
-    dateFormatted: "28 de Fevereiro de 2026",
-    time: "18:00",
-    confirmationDeadline: "13/02/2026",
-} as const;
-
-export const VENUE = {
-    name: "Galeto Mamma Mia",
-    address: "Galeto Mamma Mia",
-    mapsUrl: "https://maps.app.goo.gl/F9dTUnP1P6YEPWfA6",
-    wazeUrl: "https://waze.com/ul?ll=-30.0801,-51.1785&navigate=yes",
-    mapsEmbed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3469.8!2d-51.1!3d-29.9!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjnCsDU0JzAwLjAiUyA1McKwMDYnMDAuMCJX!5e0!3m2!1spt-BR!2sbr!4v1234567890",
-} as const;
+// Re-export all config for backwards compatibility
+export {
+    COUPLE,
+    WEDDING,
+    VENUE,
+    CONTACT,
+    PIX,
+    MENU,
+    NAV_ITEMS,
+    BIBLE_VERSE,
+    SECTION_TITLES,
+    GUEST_MANUAL,
+    THEME,
+    ASSETS,
+    weddingConfig,
+} from './config';
 
 // ============================================================================
-// CONTACT & PAYMENT
-// ============================================================================
-
-export const CONTACT = {
-    whatsappNumber: "5551996662954",
-    whatsappUrl: (message: string) => `https://wa.me/5551996662954?text=${message}`,
-} as const;
-
-export const PIX = {
-    key: "51985363626",
-    keyType: "Celular",
-    recipientName: "Eduardo Piccini Martins",
-    bank: "Mercado Pago",
-} as const;
-
-// ============================================================================
-// MENU CONFIGURATION
-// ============================================================================
-
-export const MENU = {
-    buffetName: "Buffet Tradicional Galeto Mamma Mia",
-    mainDish: "Galeto Assado na Brasa",
-    sections: {
-        entrada: [
-            "Polenta frita",
-            "Polpette",
-            "Sopa de capeletti",
-            "Salada de radicci",
-            "Salada de maionese",
-            "Salada mista",
-        ],
-        massas: ["Espaguete", "Penne", "Nhoque", "Talharim", "Tortéi"],
-        molhos: [
-            "Quatro queijos",
-            "Sugo",
-            "Do Neni",
-            "Tomate seco",
-            "Pesto",
-            "Alho e óleo",
-        ],
-        sobremesas: [
-            "Sagu",
-            "Pudim de leite",
-            "Ambrosia",
-            "Doce de abóbora",
-            "Sorvete",
-        ],
-        bebidas: ["Água com e sem gás", "Refrigerantes"],
-    },
-    pricing: {
-        adult: 108,
-        child: 54,
-        childAgeRange: "5-10",
-    },
-} as const;
-
-// ============================================================================
-// NAVIGATION
-// ============================================================================
-
-export const NAV_ITEMS = [
-    { name: "Início", href: "#inicio" },
-    { name: "O Casal", href: "#nossa-historia" },
-    { name: "Cerimônia", href: "#cerimonia" },
-    { name: "Cardápio", href: "#cardapio" },
-    { name: "Presentes", href: "#presentes" },
-    { name: "Confirmar", href: "#confirmacao" },
-] as const;
-
-// ============================================================================
-// BIBLE VERSE
-// ============================================================================
-
-export const BIBLE_VERSE = {
-    text: "O Senhor fez isto, e é maravilhoso aos nossos olhos.",
-    reference: "Salmos 118:23",
-} as const;
-
-// ============================================================================
-// SECTION TITLES
-// ============================================================================
-
-export const SECTION_TITLES = {
-    ourStory: {
-        subtitle: "Sobre Nós",
-        title: "Nossa História",
-    },
-    ceremony: {
-        subtitle: "Informações",
-        title: "Detalhes do Grande Dia",
-    },
-    gallery: {
-        subtitle: "Momentos Especiais",
-        title: "Nossa Galeria",
-    },
-    menu: {
-        subtitle: "Gastronomia",
-        title: "Cardápio",
-    },
-    gifts: {
-        subtitle: "Com Carinho",
-        title: "Lista de Presentes",
-    },
-    rsvp: {
-        subtitle: "Sua Presença",
-        title: "Confirme sua Presença",
-    },
-} as const;
-
-// ============================================================================
-// GUEST MANUAL
-// ============================================================================
-
-export const GUEST_MANUAL = [
-    {
-        id: "punctuality",
-        title: "Chegue no horário",
-        description: "A cerimônia começará pontualmente às 18:00. Sua presença desde o início é muito importante.",
-        icon: "clock",
-    },
-    {
-        id: "dresscode",
-        title: "O que vestir",
-        description: "Vista-se confortável! Apenas evite branco (cor da noiva) e verde oliva (cor das madrinhas).",
-        icon: "shirt",
-    },
-    {
-        id: "parking",
-        title: "Estacionamento",
-        description: "Estacionamento pago no Pontal Shopping. Carros: R$ 17 por 2h + R$ 3/hora adicional. Motos: R$ 9 por 2h + R$ 2/hora adicional.",
-        icon: "car",
-    },
-    {
-        id: "photos",
-        title: "Muitas fotos",
-        description: "Amamos fotos! Registre cada momento e compartilhe conosco! 📸",
-        icon: "camera",
-    },
-    {
-        id: "gifts",
-        title: "Presentes",
-        description: "Sua presença é o principal! Para mimos, temos uma lista virtual aqui no site.",
-        icon: "gift",
-    },
-    {
-        id: "confirmation",
-        title: "Confirmação",
-        description: "Por favor, confirme sua presença até o dia 13/02 para organizarmos tudo com carinho.",
-        icon: "check",
-    },
-] as const;
-
-// ============================================================================
-// PAYMENT CONFIGURATION
+// PAYMENT UTILITIES
 // ============================================================================
 
 // Mercado Pago Fee Rate (4.99% for credit card only - PIX has no fee)
@@ -201,6 +36,10 @@ export const calculateMPAdjustedPrice = (originalPrice: number): number => {
     return Math.round(adjustedPrice * 100) / 100;
 };
 
+// ============================================================================
+// VALIDATION UTILITIES
+// ============================================================================
+
 // Phone validation regex
 export const PHONE_REGEX = /^\(?[1-9]{2}\)?\s?(?:9\d{4}|\d{4})[-\s]?\d{4}$/;
 
@@ -210,4 +49,3 @@ export const sanitizeInput = (input: string): string => {
         .replace(/[<>]/g, '') // Remove potential HTML tags
         .trim();
 };
-

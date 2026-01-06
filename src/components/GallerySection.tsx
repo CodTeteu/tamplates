@@ -8,33 +8,15 @@ import {
   CarouselItem,
   type CarouselApi,
 } from "@/components/ui/carousel";
-import couple1 from "@/assets/couple-1.jpg";
-import couple2 from "@/assets/couple-2.jpg";
-import couple3 from "@/assets/couple-3.jpg";
-import couple4 from "@/assets/couple-4.jpg";
-import couple5 from "@/assets/couple-5.jpg";
-import couple7 from "@/assets/couple-7.jpg";
-import couple8 from "@/assets/couple-8.jpg";
-import couple9 from "@/assets/couple-9.jpg";
-import couple10 from "@/assets/couple-10.jpg";
 import BackgroundPattern from "@/components/ui/BackgroundPattern";
 import { AnimatedSectionHeader } from "@/components/ui/SectionHeader";
-import { SECTION_TITLES } from "@/constants";
+import { SECTION_TITLES, ASSETS } from "@/constants";
 import type { GalleryImage } from "@/types";
 
 const AUTO_SCROLL_INTERVAL = 4000;
 
-const images: GalleryImage[] = [
-  { src: couple1, alt: "Eduardo e Nicole na praia" },
-  { src: couple2, alt: "Eduardo e Nicole juntos" },
-  { src: couple3, alt: "Eduardo e Nicole sorrindo" },
-  { src: couple4, alt: "Eduardo e Nicole felizes" },
-  { src: couple5, alt: "Eduardo e Nicole se beijando" },
-  { src: couple7, alt: "Eduardo e Nicole românticos" },
-  { src: couple8, alt: "Eduardo e Nicole abraçados" },
-  { src: couple9, alt: "Eduardo e Nicole ao pôr do sol" },
-  { src: couple10, alt: "Eduardo e Nicole apaixonados" },
-];
+// Use gallery images from config
+const images: readonly GalleryImage[] = ASSETS.gallery;
 
 /**
  * Gallery Section Component

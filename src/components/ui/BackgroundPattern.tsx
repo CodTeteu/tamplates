@@ -1,4 +1,4 @@
-import subtlePattern from "@/assets/subtle-pattern.png";
+import { ASSETS } from "@/constants";
 import type { BackgroundPatternProps } from "@/types";
 
 /**
@@ -13,7 +13,7 @@ const BackgroundPattern = ({
         <div
             className={`absolute inset-0 pointer-events-none ${className}`}
             style={{
-                backgroundImage: `url(${subtlePattern})`,
+                backgroundImage: `url(${ASSETS.backgrounds.pattern})`,
                 backgroundRepeat: "repeat",
                 backgroundSize: "400px",
                 opacity: opacity / 100,

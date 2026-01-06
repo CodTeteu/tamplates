@@ -90,12 +90,12 @@ export const CartDrawer: React.FC = () => {
                 return;
             }
 
-            // Mercado Pago (Card)
+            // Mercado Pago (Card) - send adjusted price with fee
             const data = await PaymentService.createPreference({
                 items: items.map(item => ({
                     id: item.id,
                     name: item.name,
-                    price: item.price,
+                    price: calculateMPAdjustedPrice(item.price), // Price includes MP fee
                     description: item.description,
                     imageUrl: item.imageUrl,
                     quantity: 1
