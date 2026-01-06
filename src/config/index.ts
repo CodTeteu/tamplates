@@ -11,6 +11,7 @@ export {
     VENUE,
     CONTACT,
     PIX,
+    PAYMENT_CONFIG,
     DEVELOPER,
     THEME,
     ACTIVE_THEME,

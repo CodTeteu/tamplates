@@ -58,6 +58,14 @@ export const PIX = {
     bank: "Mercado Pago",
 } as const;
 
+export const PAYMENT_CONFIG = {
+    /** 
+     * Taxa do Mercado Pago para cartão de crédito (4.99% = 0.0499).
+     * Defina como 0 para não repassar a taxa com o comprador.
+     */
+    mercadoPagoFee: 0.0499,
+} as const;
+
 // ============================================================================
 // DEVELOPER / CREDITS
 // ============================================================================
@@ -298,6 +306,7 @@ export const weddingConfig = {
     sectionTitles: SECTION_TITLES,
     guestManual: GUEST_MANUAL,
     developer: DEVELOPER,
+    paymentConfig: PAYMENT_CONFIG,
 } as const;
 
 export default weddingConfig;

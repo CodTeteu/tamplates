@@ -267,6 +267,10 @@ export const PIX = {
   recipientName: "Nome do Destinatário",
   bank: "Nome do Banco"
 };
+
+export const PAYMENT_CONFIG = {
+  mercadoPagoFee: 0.0499 // 4.99% taxa do cartão (0 para desativar repasse)
+};
 ```
 
 ### 2.3 Personalização de Tema

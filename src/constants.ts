@@ -6,6 +6,8 @@
  * está em src/config/wedding-config.ts
  */
 
+import { weddingConfig } from './config';
+
 // Re-export all config for backwards compatibility
 export {
     COUPLE,
@@ -21,19 +23,20 @@ export {
     GUEST_MANUAL,
     THEME,
     ASSETS,
-    weddingConfig,
 } from './config';
+
+export { weddingConfig };
 
 // ============================================================================
 // PAYMENT UTILITIES
 // ============================================================================
 
-// Mercado Pago Fee Rate (4.99% for credit card only - PIX has no fee)
-export const MERCADO_PAGO_FEE_RATE = 0.0499;
-
 // Calculate adjusted price to pass MP fee to buyer
 export const calculateMPAdjustedPrice = (originalPrice: number): number => {
-    const adjustedPrice = originalPrice / (1 - MERCADO_PAGO_FEE_RATE);
+    // Import dynamically to avoid circular dependency issues if any,
+    // though here we are just using the config object.
+    const fee = weddingConfig.paymentConfig.mercadoPagoFee;
+    const adjustedPrice = originalPrice / (1 - fee);
     return Math.round(adjustedPrice * 100) / 100;
 };
 
