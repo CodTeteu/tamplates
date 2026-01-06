@@ -31,11 +31,12 @@ export { weddingConfig };
 // PAYMENT UTILITIES
 // ============================================================================
 
+// Mercado Pago Fee Rate
+export const MERCADO_PAGO_FEE_RATE = weddingConfig.paymentConfig.mercadoPagoFee;
+
 // Calculate adjusted price to pass MP fee to buyer
 export const calculateMPAdjustedPrice = (originalPrice: number): number => {
-    // Import dynamically to avoid circular dependency issues if any,
-    // though here we are just using the config object.
-    const fee = weddingConfig.paymentConfig.mercadoPagoFee;
+    const fee = MERCADO_PAGO_FEE_RATE;
     const adjustedPrice = originalPrice / (1 - fee);
     return Math.round(adjustedPrice * 100) / 100;
 };
