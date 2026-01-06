@@ -276,6 +276,7 @@ As cores são configuradas no objeto `THEME`:
 ```typescript
 export const THEME = {
   fonts: {
+    // 🔤 Fontes agora são dinâmicas! CSS Variables são atualizadas automaticamente.
     script: '"Great Vibes", cursive',      // Nomes do casal
     heading: '"Playfair Display", serif',  // Títulos
     body: '"Cormorant Garamond", serif'    // Corpo
@@ -419,6 +420,20 @@ updateMetaTag("og:image", ASSETS.backgrounds.hero);
 ```
 
 > **📱 WhatsApp:** A imagem do hero é automaticamente usada quando o link é compartilhado!
+
+### 2.6 Créditos do Rodapé (Developer)
+
+Você pode personalizar os créditos "Site desenvolvido por" no rodapé através do objeto `DEVELOPER` no arquivo de configuração.
+
+```typescript
+// wedding-config.ts
+export const DEVELOPER = {
+    name: "Luma",
+    label: "Site desenvolvido por",
+    url: "https://instagram.com/luma.convitesdigitais",
+    logo: "/images/luma-logo-v2.png", // Em public/images
+}
+```
 
 ---
 

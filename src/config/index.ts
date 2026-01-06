@@ -11,6 +11,7 @@ export {
     VENUE,
     CONTACT,
     PIX,
+    DEVELOPER,
     THEME,
     ACTIVE_THEME,
     THEME_PRESETS,

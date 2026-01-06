@@ -59,6 +59,17 @@ export const PIX = {
 } as const;
 
 // ============================================================================
+// DEVELOPER / CREDITS
+// ============================================================================
+
+export const DEVELOPER = {
+    name: "Luma",
+    url: "https://instagram.com/luma.convitesdigitais",
+    logo: "/images/luma-logo-v2.png",
+    label: "Site desenvolvido por",
+} as const;
+
+// ============================================================================
 // THEME CONFIGURATION
 // ============================================================================
 
@@ -286,6 +297,7 @@ export const weddingConfig = {
     bibleVerse: BIBLE_VERSE,
     sectionTitles: SECTION_TITLES,
     guestManual: GUEST_MANUAL,
+    developer: DEVELOPER,
 } as const;
 
 export default weddingConfig;

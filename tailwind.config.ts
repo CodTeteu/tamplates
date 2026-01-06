@@ -15,9 +15,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        script: ['"Great Vibes"', 'cursive'],
-        heading: ['"Playfair Display"', 'serif'],
-        body: ['"Cormorant Garamond"', 'serif'],
+        script: ['var(--font-script)', 'cursive'],
+        heading: ['var(--font-heading)', 'serif'],
+        body: ['var(--font-body)', 'serif'],
       },
       colors: {
         border: "hsl(var(--border))",

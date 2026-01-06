@@ -13,6 +13,7 @@ export {
     VENUE,
     CONTACT,
     PIX,
+    DEVELOPER,
     MENU,
     NAV_ITEMS,
     BIBLE_VERSE,

@@ -41,6 +41,12 @@ const useThemeInjection = () => {
     root.style.setProperty('--wedding-brown', colors.weddingBrown);
     root.style.setProperty('--wedding-olive', colors.weddingOlive);
     root.style.setProperty('--wedding-tan', colors.weddingTan);
+
+    // Dynamic Fonts
+    const { fonts } = THEME;
+    root.style.setProperty('--font-script', fonts.script);
+    root.style.setProperty('--font-heading', fonts.heading);
+    root.style.setProperty('--font-body', fonts.body);
   }, []);
 };
 

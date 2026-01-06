@@ -1,5 +1,5 @@
 import { Heart, Settings } from "lucide-react";
-import { COUPLE, WEDDING, BIBLE_VERSE } from "@/constants";
+import { COUPLE, WEDDING, BIBLE_VERSE, DEVELOPER } from "@/constants";
 
 /**
  * Footer Component
@@ -43,17 +43,17 @@ const Footer = () => {
         {/* Credits */}
         <div className="flex flex-col items-center gap-1 border-t border-[#E5D3B3]/10 pt-4 w-full max-w-sm">
           <p className="text-xs uppercase tracking-[0.25em] text-[#E5D3B3]/50 font-bold mb-1">
-            Site desenvolvido por
+            {DEVELOPER.label}
           </p>
 
           <img
-            src="/images/luma-logo-v2.png"
-            alt="LUMA"
+            src={DEVELOPER.logo}
+            alt={DEVELOPER.name}
             className="h-20 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity mb-1"
           />
 
           <a
-            href="https://instagram.com/luma.convitesdigitais"
+            href={DEVELOPER.url}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-[#E5D3B3]/70 hover:text-[#E5D3B3] transition-colors text-sm font-bold tracking-wide"
@@ -63,7 +63,7 @@ const Footer = () => {
               <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
               <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
             </svg>
-            @luma.convitesdigitais
+            @{DEVELOPER.name.toLowerCase()}.convitesdigitais
           </a>
         </div>
       </div>
